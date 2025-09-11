@@ -1,0 +1,7 @@
+package com.example.Meds.dao;
+
+import com.example.Meds.entity.Medicine;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface MedicineRepository extends JpaRepository<Medicine, Integer> {
+}
