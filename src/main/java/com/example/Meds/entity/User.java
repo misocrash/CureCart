@@ -35,6 +35,8 @@ public class User {
     }
 
     //constructor
+    public User(){}
+
     public User(String name, String email, String password, Role role, LocalDateTime createdAt) {
         this.name = name;
         this.email = email;
