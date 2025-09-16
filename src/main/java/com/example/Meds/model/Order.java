@@ -1,4 +1,4 @@
-package com.example.Meds.entity;
+package com.example.Meds.model;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
@@ -10,7 +10,7 @@ public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long orderId;
+    private int id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -46,12 +46,12 @@ public class Order {
 
     // Getters and setters omitted for brevity
 
-    public Long getOrderId() {
-        return orderId;
+    public int getOrderId() {
+        return id;
     }
 
-    public void setOrderId(Long orderId) {
-        this.orderId = orderId;
+    public void setOrderId(int id) {
+        this.id = id;
     }
 
     public User getUser() {

@@ -1,4 +1,4 @@
-package com.example.Meds.entity;
+package com.example.Meds.model;
 
 public enum OrderStatus {
     PENDING,

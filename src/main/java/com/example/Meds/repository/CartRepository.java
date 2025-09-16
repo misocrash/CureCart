@@ -1,6 +1,6 @@
-package com.example.Meds.dao;
+package com.example.Meds.repository;
 
-import com.example.Meds.entity.Cart;
+import com.example.Meds.model.Cart;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CartRepository extends JpaRepository<Cart, Long> {
