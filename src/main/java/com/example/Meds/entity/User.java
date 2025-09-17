@@ -1,11 +1,13 @@
 package com.example.Meds.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name="users")
+@Data
 public class User {
 
     @Id
@@ -28,14 +30,11 @@ public class User {
     @Column(name = "created_at", columnDefinition = "TIMESTAMP")
     private LocalDateTime createdAt;
 
-    // Enum for Role
-    public enum Role {
-        USER,
-        ADMIN
-    }
-
-    //constructor
-    public User(){}
+//    // Enum for Role
+//    public enum Role {
+//        USER,
+//        ADMIN
+//    }
 
     public User(String name, String email, String password, Role role, LocalDateTime createdAt) {
         this.name = name;
@@ -45,67 +44,4 @@ public class User {
         this.createdAt = createdAt;
     }
 
-    //getters and setters
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    //to String
-
-    @Override
-    public String toString() {
-        return "Users{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", role=" + role +
-                ", createdAt=" + createdAt +
-                '}';
-    }
 }
