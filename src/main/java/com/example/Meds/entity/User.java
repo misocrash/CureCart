@@ -1,13 +1,16 @@
 package com.example.Meds.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name="users")
 @Data
+@RequiredArgsConstructor
 public class User {
 
     @Id
