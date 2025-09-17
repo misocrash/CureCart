@@ -1,0 +1,35 @@
+package com.example.Meds.controller;
+
+
+import com.example.Meds.dto.AddressAddRequestDTO;
+import com.example.Meds.service.AddressService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/address")
+public class AddressController {
+
+    private final AddressService addressService;
+    public AddressController(AddressService addressService){
+        this.addressService=addressService;
+    }
+
+//    //WAOW YE HO GAYA// POST   /address/add           → Add a new address
+//    GET    /address/              → Get all addresses// nahi chahiye
+//    GET    /address/{id}          → Get address by user ID
+//    PUT    /address/update/{id}   → Update address by address ID
+//    DELETE /address/delete/{id}   → Delete address by address ID
+
+    @PostMapping("/add/{userId}")
+    public ResponseEntity<?> addAddress(@PathVariable int userId, @RequestBody AddressAddRequestDTO addedAddress){
+        addressService.addAddress(userId, addedAddress);
+        return new ResponseEntity<>("Address Added!!", HttpStatus.CREATED);
+    }
+
+
+
+
+
+}
