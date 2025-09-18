@@ -2,6 +2,7 @@ package com.example.Meds.controller;
 
 
 import com.example.Meds.dto.AddressAddRequestDTO;
+import com.example.Meds.dto.AddressGetAllRequestDTO;
 import com.example.Meds.dto.AddressResponseDTO;
 import com.example.Meds.dto.AddressUpdateRequestDTO;
 import com.example.Meds.entity.Address;
@@ -9,6 +10,8 @@ import com.example.Meds.service.AddressService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/address")
@@ -35,6 +38,12 @@ public class AddressController {
     public ResponseEntity<?> updateAddress(@PathVariable int id, @RequestBody AddressUpdateRequestDTO updatedAddressDTO) {
         AddressResponseDTO responseDTO = addressService.updateAddress(id, updatedAddressDTO);
         return ResponseEntity.ok(responseDTO);
+    }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<List<AddressGetAllRequestDTO>> getAddressById(@PathVariable int userId){
+        List<AddressGetAllRequestDTO> addressList= addressService.getAddressById(userId);
+        return ResponseEntity.ok(addressList);
     }
 
 
