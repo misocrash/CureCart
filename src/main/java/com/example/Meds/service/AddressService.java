@@ -42,6 +42,7 @@ public class AddressService {
         addressRepository.save(address);
     }
 
+
     public List<AddressGetAllRequestDTO> getAddressById(int userId) {
         User user= usersRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -110,5 +111,8 @@ public class AddressService {
         return dto;
     }
 
+    public void deleteAddressById(long id) {
+        addressRepository.deleteById(id);
+    }
 }
 

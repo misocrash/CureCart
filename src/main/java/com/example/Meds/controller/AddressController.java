@@ -7,6 +7,7 @@ import com.example.Meds.dto.AddressResponseDTO;
 import com.example.Meds.dto.AddressUpdateRequestDTO;
 import com.example.Meds.entity.Address;
 import com.example.Meds.service.AddressService;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -46,6 +47,11 @@ public class AddressController {
         return ResponseEntity.ok(addressList);
     }
 
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteAddressById(@PathVariable long id) {
+        addressService.deleteAddressById(id);
+        return ResponseEntity.ok("Address deleted!");
+    }
 
 
 }
