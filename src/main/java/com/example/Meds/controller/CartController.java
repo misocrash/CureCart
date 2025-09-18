@@ -1,10 +1,10 @@
 package com.example.Meds.controller;
+import com.example.Meds.entity.Cart;
+import com.example.Meds.entity.User;
 import com.example.Meds.service.CartService;
+import com.example.Meds.service.UserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 //POST   /cart/create           → Create a new cart
 //GET    /cart/                 → Get all carts of all users
@@ -16,10 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/cart")
 public class CartController {
     private final CartService cartService;
-
-    public CartController(CartService cartService) {
+    private final UserService userService;
+    public CartController(CartService cartService, UserService userService) {
         this.cartService = cartService;
+        this.userService=userService;
     }
+
 
     //@PostMapping("/register")
     //    public ResponseEntity<?> register(@RequestBody UserRegisterRequestDTO request){
@@ -27,9 +29,10 @@ public class CartController {
     //        return new ResponseEntity<>("User registered!!", HttpStatus.CREATED);
     //    }
 
-    @PostMapping
-    public ResponseEntity<?> createCart(@ResponseBody cart){
-        return null;
+    @PostMapping("/{userId}")
+    public void createCart(@PathVariable Integer userId) {
+        User user = userService.findUserById(userId);
+        cartService.createCartForUser(user);
     }
 
 }

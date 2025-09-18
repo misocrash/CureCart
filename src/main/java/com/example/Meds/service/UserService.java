@@ -13,9 +13,11 @@ import java.util.List;
 public class UserService {
 
     private final UsersRepository usersRepository;
+    private final CartService cartService;
 
-    public UserService(UsersRepository userRepository) {
+    public UserService(UsersRepository userRepository,CartService cartService) {
         this.usersRepository = userRepository;
+        this.cartService=cartService;
     }
 
     public void register(UserRegisterRequestDTO request) {
@@ -29,6 +31,7 @@ public class UserService {
         );
 
         usersRepository.save(user);
+        cartService.createCartForUser(user);
 
     }
 
