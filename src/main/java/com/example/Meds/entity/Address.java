@@ -2,10 +2,12 @@ package com.example.Meds.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 @Entity
 @Table(name = "addresses")
 @Data
+@RequiredArgsConstructor
 public class Address {
 
     @Id
@@ -54,5 +56,8 @@ public class Address {
         this.country = country;
         this.isDefault = isDefault;
     }
+
+
+
 }
 

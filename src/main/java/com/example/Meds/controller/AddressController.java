@@ -2,6 +2,9 @@ package com.example.Meds.controller;
 
 
 import com.example.Meds.dto.AddressAddRequestDTO;
+import com.example.Meds.dto.AddressResponseDTO;
+import com.example.Meds.dto.AddressUpdateRequestDTO;
+import com.example.Meds.entity.Address;
 import com.example.Meds.service.AddressService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +21,7 @@ public class AddressController {
 
 //    //WAOW YE HO GAYA// POST   /address/add           → Add a new address
 //    GET    /address/              → Get all addresses// nahi chahiye
-//    GET    /address/{id}          → Get address by user ID
+//    GET    /address/{id}          → Get address by user ID//miso
 //    PUT    /address/update/{id}   → Update address by address ID
 //    DELETE /address/delete/{id}   → Delete address by address ID
 
@@ -28,7 +31,11 @@ public class AddressController {
         return new ResponseEntity<>("Address Added!!", HttpStatus.CREATED);
     }
 
-
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> updateAddress(@PathVariable int id, @RequestBody AddressUpdateRequestDTO updatedAddressDTO) {
+        AddressResponseDTO responseDTO = addressService.updateAddress(id, updatedAddressDTO);
+        return ResponseEntity.ok(responseDTO);
+    }
 
 
 
