@@ -1,5 +1,6 @@
 package com.example.Meds.controller;
 
+import com.example.Meds.dto.SingleOrderDetailsDTO;
 import com.example.Meds.dto.UserRegisterRequestDTO;
 import com.example.Meds.entity.User;
 import com.example.Meds.service.UserService;
@@ -48,5 +49,11 @@ public class UserController {
     public ResponseEntity<?> updateUser(@PathVariable int id,@RequestBody User updatedUser){
         User user = userService.updateUser(id, updatedUser);
         return ResponseEntity.ok(user);
+    }
+
+    @GetMapping("/orderHistory/{userId}")
+    public ResponseEntity<?> getOrderHistory(@PathVariable int userId){
+        List<SingleOrderDetailsDTO> response = userService.getOrderHistory(userId);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
