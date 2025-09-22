@@ -19,6 +19,7 @@ public class OrderService {
     private final AddressRepository addressRepository;
     private final CartService cartService;
 
+
     public OrderService(UsersRepository userRepository, CartRepository cartRepository, OrderRepository orderRepository, CartItemRepository cartItemRepository,AddressRepository addressRepository, CartService cartService) {
         this.usersRepository = userRepository;
         this.cartRepository = cartRepository;
@@ -63,7 +64,9 @@ public class OrderService {
         );
 
         Order savedOrder = orderRepository.save(order);
+        cartService.createCartForUser(user);
         return savedOrder.getOrderId();
+
 
     }
 
