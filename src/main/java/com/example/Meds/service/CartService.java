@@ -7,6 +7,7 @@ import com.example.Meds.repository.UsersRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class CartService {
@@ -25,5 +26,18 @@ public class CartService {
         cart.setUpdatedAt(LocalDateTime.now());
 
         cartRepository.save(cart);
+    }
+
+
+    public Cart getCurrentCartByUserId(int userId) {
+
+        Cart cart = cartRepository.findTopByUserIdOrderByCartIdDesc(userId);
+
+        return cart;
+
+    }
+
+    public List<Cart> findCartsById(int userId) {
+        return cartRepository.findByUserId(userId);
     }
 }

@@ -6,6 +6,8 @@ import com.example.Meds.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 //POST   /cart/create           → Create a new cart
 //GET    /cart/                 → Get all carts of all users
 //GET    /cart/{id}             → Get cart by user Id
@@ -23,11 +25,6 @@ public class CartController {
     }
 
 
-    //@PostMapping("/register")
-    //    public ResponseEntity<?> register(@RequestBody UserRegisterRequestDTO request){
-    //        userService.register(request);
-    //        return new ResponseEntity<>("User registered!!", HttpStatus.CREATED);
-    //    }
 
     @PostMapping("/{userId}")
     public void createCart(@PathVariable Integer userId) {
@@ -35,6 +32,16 @@ public class CartController {
         cartService.createCartForUser(user);
     }
 
+    @GetMapping("/current/{userId}")
+    public ResponseEntity<Cart> getCurrentCart(@PathVariable int userId) {
+        Cart currentcart = cartService.getCurrentCartByUserId(userId);
+        return ResponseEntity.ok(currentcart);
+    }
 
+    @GetMapping("/getallcarts/{userId}")
+    public ResponseEntity<?> getAllCartsForUser(@PathVariable int userId){
+        List<Cart> cartsList= cartService.findCartsById(userId);
+        return ResponseEntity.ok(cartsList);
+    }
 
 }
