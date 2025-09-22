@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OrderService {
@@ -64,5 +65,25 @@ public class OrderService {
         Order savedOrder = orderRepository.save(order);
         return savedOrder.getOrderId();
 
+    }
+
+    public void updateOrderStatus(long orderId, OrderStatus status) {
+        Optional<Order> optionalOrder = orderRepository.findById(orderId);
+        System.out.println(optionalOrder);
+        if (optionalOrder.isPresent()) {
+            Order order = optionalOrder.get();
+            if (status.toString().equals("SHIPPED")) {
+                order.setStatus(OrderStatus.SHIPPED);
+                order.setUpdatedAt(LocalDateTime.now());
+            } else if (status.toString().equals("CANCELLED")) {
+                order.setStatus(OrderStatus.CANCELLED);
+                order.setUpdatedAt(LocalDateTime.now());
+            }
+            orderRepository.save(order);
+        }
+    }
+
+    public Optional<Order> getOrderById(long orderId) {
+        return orderRepository.findById(orderId);
     }
 }
