@@ -1,9 +1,9 @@
 package com.example.Meds.service;
 
+import com.example.Meds.dto.CartGetCurrentRequestDTO;
 import com.example.Meds.entity.Cart;
 import com.example.Meds.entity.User;
 import com.example.Meds.repository.CartRepository;
-import com.example.Meds.repository.UsersRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -29,11 +29,16 @@ public class CartService {
     }
 
 
-    public Cart getCurrentCartByUserId(int userId) {
+    public CartGetCurrentRequestDTO getCurrentCartByUserId(int userId) {
 
         Cart cart = cartRepository.findTopByUserIdOrderByCartIdDesc(userId);
+        return new CartGetCurrentRequestDTO(
+                cart.getUser().getId(),
+                cart.getCartId(),
+                cart.getUpdatedAt(),
+                cart.getCreatedAt()
+        );
 
-        return cart;
 
     }
 

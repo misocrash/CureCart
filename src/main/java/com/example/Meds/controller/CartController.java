@@ -1,4 +1,5 @@
 package com.example.Meds.controller;
+import com.example.Meds.dto.CartGetCurrentRequestDTO;
 import com.example.Meds.entity.Cart;
 import com.example.Meds.entity.User;
 import com.example.Meds.service.CartService;
@@ -33,8 +34,8 @@ public class CartController {
     }
 
     @GetMapping("/current/{userId}")
-    public ResponseEntity<Cart> getCurrentCart(@PathVariable int userId) {
-        Cart currentcart = cartService.getCurrentCartByUserId(userId);
+    public ResponseEntity<CartGetCurrentRequestDTO> getCurrentCart(@PathVariable int userId) {
+        CartGetCurrentRequestDTO currentcart = cartService.getCurrentCartByUserId(userId);
         return ResponseEntity.ok(currentcart);
     }
 

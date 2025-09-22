@@ -2,6 +2,7 @@ package com.example.Meds.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -9,6 +10,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "orders")
 @Data
+@RequiredArgsConstructor
 public class Order {
 
     @Id
@@ -52,5 +54,14 @@ public class Order {
         updatedAt = LocalDateTime.now();
     }
 
+    public Order(User user, Address address, BigDecimal totalAmount, OrderStatus status, Cart cart, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.user = user;
+        this.address = address;
+        this.totalAmount = totalAmount;
+        this.status = status;
+        this.cart = cart;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
 }
 

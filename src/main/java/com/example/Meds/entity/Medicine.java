@@ -41,4 +41,16 @@ public class Medicine {
         this.pack_size = pack_size;
         this.compositionText = compositionText;
     }
+
+    @Override
+    public String toString() {
+        return "Medicine{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", price=" + price +
+                ", manufacture_name='" + manufacture_name + '\'' +
+                ", pack_size='" + pack_size + '\'' +
+                ", compositionText='" + compositionText + '\'' +
+                '}';
+    }
 }
