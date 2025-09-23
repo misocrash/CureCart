@@ -28,6 +28,9 @@ public class User {
     @Column(name = "created_at", columnDefinition = "TIMESTAMP")
     private LocalDateTime createdAt;
 
+    @Column(name = "contact")
+    private String contact_no;
+
     // Enum for Role
     public enum Role {
         USER,
@@ -37,12 +40,13 @@ public class User {
     //constructor
     public User(){}
 
-    public User(String name, String email, String password, Role role, LocalDateTime createdAt) {
+    public User(String name, String email, String password, Role role, LocalDateTime createdAt, String contact_no) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.role = role;
         this.createdAt = createdAt;
+        this.contact_no = contact_no;
     }
 
     //getters and setters
@@ -61,6 +65,14 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getContact_no() {
+        return contact_no;
+    }
+
+    public void setContact_no(String contact_no) {
+        this.contact_no = contact_no;
     }
 
     public String getEmail() {

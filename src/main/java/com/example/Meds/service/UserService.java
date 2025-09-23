@@ -8,4 +8,6 @@ public interface UserService {
     User findById(Integer id);
     User updateProfile(Integer id, User updatedUser);
     List<User> getAllUsers();
+
+    User deleteById(Integer id);
 }
