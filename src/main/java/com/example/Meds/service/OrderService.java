@@ -86,7 +86,35 @@ public class OrderService {
         }
     }
 
-    public Optional<Order> getOrderById(long orderId) {
-        return orderRepository.findById(orderId);
+    public OrderDTO getOrderById(long orderId) {
+        Optional<Order> order = orderRepository.findById(orderId);
+        OrderDTO dto = new OrderDTO();
+
+        dto.setOrderId(order.get().getOrderId());
+        dto.setUser(convertUser(order.get().getUser()));
+        dto.setAddress(convertAddress(order.get().getAddress()));
+        dto.setTotalAmount(order.get().getTotalAmount());
+        dto.setStatus(order.get().getStatus().name());
+        return dto;
+    }
+
+    public UserDTO convertUser(User user) {
+        UserDTO dto = new UserDTO();
+        dto.setId(user.getId());
+        dto.setName(user.getName());
+        dto.setEmail(user.getEmail());
+        return dto;
+    }
+
+    public AddressDTO convertAddress(Address address) {
+        AddressDTO dto = new AddressDTO();
+        dto.setAddressId(address.getAddressId());
+        dto.setLine1(address.getLine1());
+        dto.setLine2(address.getLine2());
+        dto.setCity(address.getCity());
+        dto.setState(address.getState());
+        dto.setCountry(address.getCountry());
+        dto.setPostalCode(address.getPostalCode());
+        return dto;
     }
 }
