@@ -1,6 +1,7 @@
 package com.example.Meds.controller;
 
 import com.example.Meds.dto.AddToCartRequestDto;
+import com.example.Meds.dto.UpdateCartItemQuantityDto;
 import com.example.Meds.service.CartItemsService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,5 +20,15 @@ public class CartItemsController {
         return ResponseEntity.ok("Item added to cart");
 
     }
+
+    @PutMapping("/update/{userId}")
+    public ResponseEntity<?> updateCartItemQuantity(
+            @PathVariable int userId,
+            @RequestBody UpdateCartItemQuantityDto requestDto
+    ) {
+        cartItemsService.updateQuantity(userId, requestDto);
+        return ResponseEntity.ok("Cart item updated");
+    }
+
 
 }
