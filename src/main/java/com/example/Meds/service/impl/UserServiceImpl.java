@@ -4,9 +4,11 @@ import com.example.Meds.entity.User;
 import com.example.Meds.repository.UsersRepository;
 import com.example.Meds.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class UserServiceImpl implements UserService {
     private final UsersRepository userRepository;
 
