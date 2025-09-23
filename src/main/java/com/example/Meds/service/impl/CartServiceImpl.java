@@ -41,7 +41,7 @@ public class CartServiceImpl implements CartService {
     @Override
     public CartItem addItemToCart(Long cartId, Long medicineId, int quantity) {
         Cart cart = cartRepository.findById(cartId).orElseThrow();
-        Medicine medicine = medicineRepository.findById(Math.toIntExact(medicineId)).orElseThrow();
+        Medicine medicine = medicineRepository.findById(medicineId).orElseThrow();
 
         CartItem item = new CartItem();
         item.setCart(cart);
