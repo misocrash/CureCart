@@ -1,0 +1,72 @@
+<div class="page-container">
+  <h1>Manage Medicines</h1>
+  <p>Add, edit, and delete medicine records from the inventory.</p>
+
+  <div class="card">
+    <div class="card-header">
+      <h2>All Medicines</h2>
+      <button class="add-button" (click)="openAddDialog()">Add New Medicine</button>
+    </div>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Product Name</th>
+            <th>Category</th>
+            <th>Stock</th>
+            <th>Price</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let medicine of medicines">
+            <td>{{ medicine.name }}</td>
+            <td>{{ medicine.category }}</td>
+            <td>{{ medicine.stock }}</td>
+            <td>${{ medicine.price.toFixed(2) }}</td>
+            <td>
+              <div class="action-buttons">
+                <button class="edit-button" (click)="openEditDialog(medicine)">Edit</button>
+                <button class="delete-button">Delete</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="isDialogOpen" class="dialog-overlay">
+  <div class="dialog-content">
+    <h2>{{ editingMedicine ? 'Edit Medicine' : 'Add New Medicine' }}</h2>
+    <form (ngSubmit)="onFormSubmit()" class="dialog-form">
+      <div class="input-group">
+        <label for="name">Medicine Name</label>
+        <input id="name" type="text" [(ngModel)]="formData.name" name="name" required>
+      </div>
+      <div class="input-group">
+        <label for="category">Category</label>
+        <input id="category" type="text" [(ngModel)]="formData.category" name="category" required>
+      </div>
+      <div class="form-row">
+        <div class="input-group">
+          <label for="stock">Stock</label>
+          <input id="stock" type="number" [(ngModel)]="formData.stock" name="stock" required>
+        </div>
+        <div class="input-group">
+          <label for="minStock">Min. Stock</label>
+          <input id="minStock" type="number" [(ngModel)]="formData.minStock" name="minStock" required>
+        </div>
+      </div>
+      <div class="input-group">
+        <label for="price">Price</label>
+        <input id="price" type="number" [(ngModel)]="formData.price" name="price" required>
+      </div>
+      <div class="dialog-actions">
+        <button type="button" class="cancel-button" (click)="closeDialog()">Cancel</button>
+        <button type="submit" class="submit-button">{{ editingMedicine ? 'Update' : 'Add' }}</button>
+      </div>
+    </form>
+  </div>
+</div>

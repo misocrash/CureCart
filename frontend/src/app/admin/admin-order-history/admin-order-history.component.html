@@ -1,0 +1,42 @@
+<div class="page-container">
+  <h1>Order History</h1>
+  <p>Review and track all past and pending orders.</p>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="search-container">
+        <input type="text" placeholder="Search by Order ID or Customer...">
+      </div>
+    </div>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Customer Name</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Total Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let order of orders">
+            <td class="order-id">{{ order.id }}</td>
+            <td>{{ order.customerName }}</td>
+            <td>{{ order.date }}</td>
+            <td>
+              <span class="badge" [ngClass]="{
+                'status-completed': order.status === 'completed',
+                'status-pending': order.status === 'pending',
+                'status-cancelled': order.status === 'cancelled'
+              }">
+                {{ order.status | titlecase }}
+              </span>
+            </td>
+            <td class="total-amount">${{ order.totalAmount.toFixed(2) }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
