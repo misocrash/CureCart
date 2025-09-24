@@ -2,6 +2,7 @@ package com.example.Meds.service.impl;
 
 import com.example.Meds.dto.MedicineDTO;
 import com.example.Meds.entity.Medicine;
+import com.example.Meds.exception.ResourceNotFoundException;
 import com.example.Meds.mapper.MedicineMapper;
 import com.example.Meds.repository.MedicineRepository;
 import com.example.Meds.service.MedicineService;
@@ -30,7 +31,7 @@ public class MedicineServiceImpl implements MedicineService {
     @Override
     public Medicine getMedicineById(Long id) {
         return medicineRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Medicine not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Medicine not found with id: " + id));
     }
 
     @Override

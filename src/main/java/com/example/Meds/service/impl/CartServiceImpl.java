@@ -6,6 +6,7 @@ import com.example.Meds.entity.Cart;
 import com.example.Meds.entity.CartItem;
 import com.example.Meds.entity.Medicine;
 import com.example.Meds.entity.User;
+import com.example.Meds.exception.ResourceNotFoundException;
 import com.example.Meds.mapper.CartMapper;
 import com.example.Meds.repository.CartItemRepository;
 import com.example.Meds.repository.CartRepository;
@@ -50,7 +51,7 @@ public class CartServiceImpl implements CartService {
     public CartResponseDTO addItemToCart(Integer userId, CartItemDTO cartItemDTO) {
         Cart cart = getOrCreateCartEntity(userId);
         Medicine medicine = medicineRepository.findById(cartItemDTO.getMedicineId())
-                .orElseThrow(() -> new RuntimeException("Medicine not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Medicine not found"));
 
         Optional<CartItem> existingItemOpt = cartItemRepository.findByCart_CartIdAndMedicine_Id(cart.getCartId(), medicine.getId());
 
@@ -73,7 +74,7 @@ public class CartServiceImpl implements CartService {
     @Transactional
     public CartResponseDTO updateItemQuantity(Long cartItemId, int quantity) {
         CartItem item = cartItemRepository.findById(cartItemId)
-                .orElseThrow(() -> new RuntimeException("Cart item not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Cart item not found"));
 
         if (quantity <= 0) {
             cartItemRepository.delete(item);
@@ -89,7 +90,7 @@ public class CartServiceImpl implements CartService {
     @Transactional
     public CartResponseDTO removeItemFromCart(Long cartItemId) {
         CartItem item = cartItemRepository.findById(cartItemId)
-                .orElseThrow(() -> new RuntimeException("Cart item not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Cart item not found"));
         Integer userId = item.getCart().getUser().getId();
         cartItemRepository.delete(item);
         return getCartByUserId(userId);
@@ -108,7 +109,7 @@ public class CartServiceImpl implements CartService {
         return cartRepository.findByUser_Id(userId)
                 .orElseGet(() -> {
                     User user = usersRepository.findById(userId)
-                            .orElseThrow(() -> new RuntimeException("User not found"));
+                            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
                     Cart newCart = new Cart();
                     newCart.setUser(user);
 

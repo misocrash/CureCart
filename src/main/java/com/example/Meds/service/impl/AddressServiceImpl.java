@@ -3,6 +3,9 @@ package com.example.Meds.service.impl;
 import com.example.Meds.dto.AddressDTO;
 import com.example.Meds.entity.Address;
 import com.example.Meds.entity.User;
+import com.example.Meds.exception.IllegalArgumentException;
+import com.example.Meds.exception.ResourceNotFoundException;
+
 import com.example.Meds.mapper.AddressMapper;
 import com.example.Meds.repository.AddressRepository;
 import com.example.Meds.repository.UsersRepository;
@@ -32,7 +35,7 @@ public class AddressServiceImpl implements AddressService {
     public Address addAddress(Integer userId, AddressDTO addressDTO) {
         // 1. Find the user this address will belong to
         User user = usersRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
 
         // 2. Use the mapper to create an Address entity from the DTO and User
         Address address = addressMapper.toAddressEntity(addressDTO, user);

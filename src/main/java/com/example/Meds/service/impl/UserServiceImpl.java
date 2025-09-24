@@ -2,6 +2,7 @@ package com.example.Meds.service.impl;
 
 import com.example.Meds.dto.UserDTO;
 import com.example.Meds.entity.User;
+import com.example.Meds.exception.ResourceNotFoundException;
 import com.example.Meds.mapper.UserMapper; // Assuming you are using MapStruct
 import com.example.Meds.repository.UsersRepository;
 import com.example.Meds.service.UserService;
@@ -39,7 +40,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findById(Integer id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
     }
 
     @Override

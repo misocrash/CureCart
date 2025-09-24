@@ -1,6 +1,7 @@
 package com.example.Meds.service.impl;
 
 import com.example.Meds.entity.*;
+import com.example.Meds.exception.ResourceNotFoundException;
 import com.example.Meds.repository.*;
 import com.example.Meds.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,10 +39,10 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public Order placeOrder(Integer userId, Long addressId) {
         Cart cart = cartRepository.findByUser_Id(userId)
-                .orElseThrow(() -> new RuntimeException("Cart not found for user: " + userId));
+                .orElseThrow(() -> new ResourceNotFoundException("Cart not found for user: " + userId));
         List<CartItem> cartItems = cartItemRepository.findByCart_CartId(cart.getCartId());
         Address address = addressRepository.findById(addressId)
-                .orElseThrow(() -> new RuntimeException("Address not found with id: " + addressId));
+                .orElseThrow(() -> new ResourceNotFoundException("Address not found with id: " + addressId));
 
         if (cartItems.isEmpty()) {
             throw new IllegalStateException("Cannot place an order with an empty cart.");
@@ -93,6 +94,6 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order getOrderById(Long orderId) {
         return orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Order not found with id: " + orderId));
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + orderId));
     }
 }
