@@ -1,0 +1,35 @@
+<div class="page-container">
+  <h1>Current Orders</h1>
+  <p>View and manage all pending and processing orders.</p>
+  <div class="card">
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Customer</th>
+            <th>Date</th>
+            <th>Total</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let order of orders">
+            <td class="order-id">{{ order.id }}</td>
+            <td>{{ order.customerName }}</td>
+            <td>{{ order.date }}</td>
+            <td class="total-amount">${{ order.totalAmount.toFixed(2) }}</td>
+            <td><span class="badge status-pending">{{ order.status }}</span></td>
+            <td>
+              <div class="action-buttons">
+                <button class="action-button ship" (click)="updateStatus(order.id, 'shipped')">Mark as Shipped</button>
+                <button class="action-button cancel" (click)="updateStatus(order.id, 'cancelled')">Cancel Order</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

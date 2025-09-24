@@ -1,0 +1,8 @@
+.badge { padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 500; text-transform: capitalize; }
+.status-pending { background-color: #fef3c7; color: #d97706; }
+.action-buttons { display: flex; gap: 8px; }
+.action-button { border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 12px; }
+.action-button.ship { background-color: #dcfce7; color: #166534; }
+.action-button.cancel { background-color: #fee2e2; color: #991b1b; }
+.order-id { font-weight: 500; color: #3b82f6; }
+.total-amount { font-weight: 500; }

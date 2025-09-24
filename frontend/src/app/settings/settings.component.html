@@ -1,0 +1,25 @@
+<div class="page-container">
+  <h1>Settings</h1>
+  <p>Manage your account and system preferences.</p>
+
+  <div class="settings-grid">
+    <div class="card">
+      <div class="card-header">
+        <h2>Profile Settings</h2>
+      </div>
+      <div class="card-content">
+        <form (ngSubmit)="onProfileSubmit()" class="form">
+          <div class="input-group">
+            <label for="name">Full Name</label>
+            <input id="name" type="text" [(ngModel)]="profile.name" name="name">
+          </div>
+          <div class="input-group">
+            <label for="email">Email Address</label>
+            <input id="email" type="email" [(ngModel)]="profile.email" name="email">
+          </div>
+          <button type="submit" class="save-button">Save Changes</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
