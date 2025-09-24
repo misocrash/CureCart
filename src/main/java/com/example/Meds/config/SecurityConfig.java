@@ -57,11 +57,14 @@ public class SecurityConfig {
                         // Public endpoints
                         .requestMatchers("/api/auth/**", "/api/users/register").permitAll()
 
-                        // Rules for Medicines
-                        .requestMatchers(HttpMethod.GET, "/api/medicines/**").authenticated()
-                        .requestMatchers("/api/medicines/**").hasRole("ADMIN")
+                        // Admin-only endpoints for modifying data
+                        .requestMatchers(HttpMethod.POST, "/api/medicines").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/medicines/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/medicines/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/users/*/orders/*/status").hasRole("ADMIN")
+                        // Rule for updating order status
 
-                        // Secure everything else
+                        // General authenticated endpoints
                         .anyRequest().authenticated()
                 );
 
