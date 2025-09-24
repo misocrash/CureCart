@@ -1,6 +1,8 @@
 package com.example.Meds.service.impl;
 
+import com.example.Meds.dto.MedicineDTO;
 import com.example.Meds.entity.Medicine;
+import com.example.Meds.mapper.MedicineMapper;
 import com.example.Meds.repository.MedicineRepository;
 import com.example.Meds.service.MedicineService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,21 +13,24 @@ import java.util.List;
 @Service
 public class MedicineServiceImpl implements MedicineService {
     private final MedicineRepository medicineRepository;
+    private final MedicineMapper medicineMapper;
 
     @Autowired
-    public MedicineServiceImpl(MedicineRepository medicineRepository) {
+    public MedicineServiceImpl(MedicineRepository medicineRepository, MedicineMapper medicineMapper) {
         this.medicineRepository = medicineRepository;
+        this.medicineMapper = medicineMapper;
     }
 
     @Override
-    public Medicine addMedicine(Medicine medicine) {
+    public Medicine addMedicine(MedicineDTO medicineDTO) {
+        Medicine medicine = medicineMapper.toMedicineEntity(medicineDTO);
         return medicineRepository.save(medicine);
     }
 
     @Override
     public Medicine getMedicineById(Long id) {
         return medicineRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Medicine not found"));
+                .orElseThrow(() -> new RuntimeException("Medicine not found with id: " + id));
     }
 
     @Override
@@ -34,16 +39,23 @@ public class MedicineServiceImpl implements MedicineService {
     }
 
     @Override
-    public Medicine updateMedicine(Long id, Medicine updatedMedicine) {
+    public Medicine updateMedicine(Long id, MedicineDTO updatedMedicineDTO) {
         Medicine existing = getMedicineById(id);
-        existing.setName(updatedMedicine.getName());
-        existing.setCompositionText(updatedMedicine.getCompositionText());
-        existing.setPrice(updatedMedicine.getPrice());
-        existing.setPack_size(updatedMedicine.getPack_size());
+
+        // Apply updates from the DTO to the existing entity
+        existing.setName(updatedMedicineDTO.getName());
+        existing.setDescription(updatedMedicineDTO.getDescription());
+        existing.setPrice(updatedMedicineDTO.getPrice());
+        existing.setStock(updatedMedicineDTO.getStock());
+        existing.setManufacture_name(updatedMedicineDTO.getManufacture_name());
+        existing.setPack_size(updatedMedicineDTO.getPack_size());
+        existing.setCompositionText(updatedMedicineDTO.getCompositionText());
+
         return medicineRepository.save(existing);
     }
 
     @Override
     public void deleteMedicine(Long id) {
         medicineRepository.deleteById(id);
-    }}
+    }
+}

@@ -1,43 +1,59 @@
 package com.example.Meds.controller;
 
+import com.example.Meds.dto.MedicineDTO;
+import com.example.Meds.dto.MedicineResponseDTO;
 import com.example.Meds.entity.Medicine;
+import com.example.Meds.mapper.MedicineMapper;
 import com.example.Meds.service.MedicineService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/medicines")
 public class MedicineController {
 
     private final MedicineService medicineService;
+    private final MedicineMapper medicineMapper;
 
     @Autowired
-    public MedicineController(MedicineService medicineService) {
+    public MedicineController(MedicineService medicineService, MedicineMapper medicineMapper) {
         this.medicineService = medicineService;
+        this.medicineMapper = medicineMapper;
     }
 
     @PostMapping
-    public ResponseEntity<Medicine> addMedicine(@RequestBody Medicine medicine) {
-        return ResponseEntity.ok(medicineService.addMedicine(medicine));
+    public ResponseEntity<MedicineResponseDTO> addMedicine(@Valid @RequestBody MedicineDTO medicineDTO) {
+        Medicine savedMedicine = medicineService.addMedicine(medicineDTO);
+        MedicineResponseDTO response = medicineMapper.toMedicineResponseDTO(savedMedicine);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Medicine> getMedicine(@PathVariable Long id) {
-        return ResponseEntity.ok(medicineService.getMedicineById(id));
+    public ResponseEntity<MedicineResponseDTO> getMedicine(@PathVariable Long id) {
+        Medicine medicine = medicineService.getMedicineById(id);
+        return ResponseEntity.ok(medicineMapper.toMedicineResponseDTO(medicine));
     }
 
     @GetMapping
-    public ResponseEntity<List<Medicine>> getAllMedicines() {
-        return ResponseEntity.ok(medicineService.getAllMedicines());
+    public ResponseEntity<List<MedicineResponseDTO>> getAllMedicines() {
+        List<Medicine> medicines = medicineService.getAllMedicines();
+        List<MedicineResponseDTO> response = medicines.stream()
+                .map(medicineMapper::toMedicineResponseDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Medicine> updateMedicine(@PathVariable Long id,
-                                                   @RequestBody Medicine updatedMedicine) {
-        return ResponseEntity.ok(medicineService.updateMedicine(id, updatedMedicine));
+    public ResponseEntity<MedicineResponseDTO> updateMedicine(@PathVariable Long id,
+                                                              @Valid @RequestBody MedicineDTO medicineDTO) {
+        Medicine updatedMedicine = medicineService.updateMedicine(id, medicineDTO);
+        return ResponseEntity.ok(medicineMapper.toMedicineResponseDTO(updatedMedicine));
     }
 
     @DeleteMapping("/{id}")

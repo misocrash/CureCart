@@ -1,11 +1,11 @@
 package com.example.Meds.dto;
 
-import java.math.BigDecimal;
-import java.util.List;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -16,4 +16,3 @@ public class CartResponseDTO {
     private List<CartItemResponseDTO> items;
     private BigDecimal totalAmount;
 }
-

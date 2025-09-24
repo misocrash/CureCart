@@ -4,20 +4,31 @@ import jakarta.persistence.*;
 
 
 import java.math.BigDecimal;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "medicines")
 public class Medicine {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id; // Changed to Long for consistency
 
-    @Column(name="name")
+    @Column(name="name", nullable = false)
     private String name;
 
-    @Column(name = "price")
+    @Column(columnDefinition = "TEXT")
+    private String description; // Field added
+
+    @Column(name = "price", nullable = false)
     private BigDecimal price;
+
+    private Integer stock; // Field added
 
     @Column(name="manufacture_name")
     private String manufacture_name;
@@ -28,71 +39,4 @@ public class Medicine {
     @Column(name = "composition_text", columnDefinition = "TEXT")
     private String compositionText;
 
-    // Getters & Setters
-
-    public Medicine(){
-
-    }
-
-    public Medicine(String name, BigDecimal price , String manufacture_name, String pack_size, String compositionText){
-        this.name = name;
-        this.price = price;
-        this.manufacture_name = manufacture_name;
-        this.pack_size = pack_size;
-        this.compositionText = compositionText;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public String getManufacture_name() {
-        return manufacture_name;
-    }
-
-    public void setManufacture_name(String manufacture_name) {
-        this.manufacture_name = manufacture_name;
-    }
-
-    public String getPack_size() {
-        return pack_size;
-    }
-
-    public void setPack_size(String pack_size) {
-        this.pack_size = pack_size;
-    }
-
-    public String getCompositionText() {
-        return compositionText;
-    }
-
-    public void setCompositionText(String compositionText) {
-        this.compositionText = compositionText;
-    }
-
-    //toString
-
-    @Override
-    public String toString() {
-        return "Medicine{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", price=" + price +
-                ", manufacture_name='" + manufacture_name + '\'' +
-                ", pack_size='" + pack_size + '\'' +
-                ", compositionText='" + compositionText + '\'' +
-                '}';
-    }
 }

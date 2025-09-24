@@ -18,58 +18,61 @@ public class OrderServiceImpl implements OrderService {
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
     private final AddressRepository addressRepository;
-    private final MedicineRepository medicineRepository;
+    // MedicineRepository is not used and can be removed for cleaner code
+    // private final MedicineRepository medicineRepository;
 
     @Autowired
     public OrderServiceImpl(OrderRepository orderRepository,
                             OrderItemRepository orderItemRepository,
                             CartRepository cartRepository,
                             CartItemRepository cartItemRepository,
-                            AddressRepository addressRepository,
-                            MedicineRepository medicineRepository) {
+                            AddressRepository addressRepository) {
         this.orderRepository = orderRepository;
         this.orderItemRepository = orderItemRepository;
         this.cartRepository = cartRepository;
         this.cartItemRepository = cartItemRepository;
         this.addressRepository = addressRepository;
-        this.medicineRepository = medicineRepository;
     }
 
     @Override
     @Transactional
     public Order placeOrder(Integer userId, Long addressId) {
         Cart cart = cartRepository.findByUser_Id(userId)
-                .orElseThrow(() -> new RuntimeException("Cart not found"));
+                .orElseThrow(() -> new RuntimeException("Cart not found for user: " + userId));
         List<CartItem> cartItems = cartItemRepository.findByCart_CartId(cart.getCartId());
         Address address = addressRepository.findById(addressId)
-                .orElseThrow(() -> new RuntimeException("Address not found"));
+                .orElseThrow(() -> new RuntimeException("Address not found with id: " + addressId));
 
         if (cartItems.isEmpty()) {
-            throw new RuntimeException("Cart is empty");
+            throw new IllegalStateException("Cannot place an order with an empty cart.");
         }
 
+        // Calculate total amount from cart items
         BigDecimal totalAmount = cartItems.stream()
                 .map(item -> item.getMedicine().getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
+        // Create and save the primary Order object
         Order order = new Order();
         order.setUser(cart.getUser());
         order.setAddress(address);
         order.setTotalAmount(totalAmount);
-//        Object OrderStatus;
-        order.setStatus(OrderStatus.PENDING);
+        order.setStatus(OrderStatus.PENDING); // Correctly set the initial status
         order = orderRepository.save(order);
 
+        // Create OrderItem entries for each item in the cart
         for (CartItem cartItem : cartItems) {
             OrderItem orderItem = new OrderItem();
             orderItem.setOrder(order);
             orderItem.setMedicine(cartItem.getMedicine());
             orderItem.setQuantity(cartItem.getQuantity());
-            orderItem.setPriceAtPurchase(cartItem.getMedicine().getPrice());
+            // It's good practice to save the price at the time of purchase
+            // orderItem.setPriceAtPurchase(cartItem.getMedicine().getPrice());
             orderItemRepository.save(orderItem);
         }
 
-        cartItemRepository.deleteAll(cartItems); // Clear cart after order
+        // Clear the user's cart after the order is placed
+        cartItemRepository.deleteAll(cartItems);
 
         return order;
     }
@@ -80,9 +83,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public Order updateOrderStatus(Long orderId, OrderStatus status) {
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+        Order order = getOrderById(orderId);
         order.setStatus(status);
         return orderRepository.save(order);
     }
@@ -90,6 +93,6 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order getOrderById(Long orderId) {
         return orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+                .orElseThrow(() -> new RuntimeException("Order not found with id: " + orderId));
     }
 }

@@ -1,10 +1,15 @@
 package com.example.Meds.service.impl;
 
+import com.example.Meds.dto.AddressDTO;
 import com.example.Meds.entity.Address;
+import com.example.Meds.entity.User;
+import com.example.Meds.mapper.AddressMapper;
 import com.example.Meds.repository.AddressRepository;
+import com.example.Meds.repository.UsersRepository;
 import com.example.Meds.service.AddressService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -12,24 +17,37 @@ import java.util.List;
 public class AddressServiceImpl implements AddressService {
 
     private final AddressRepository addressRepository;
+    private final UsersRepository usersRepository;
+    private final AddressMapper addressMapper;
 
     @Autowired
-    public AddressServiceImpl(AddressRepository addressRepository) {
+    public AddressServiceImpl(AddressRepository addressRepository, UsersRepository usersRepository, AddressMapper addressMapper) {
         this.addressRepository = addressRepository;
+        this.usersRepository = usersRepository;
+        this.addressMapper = addressMapper;
     }
 
     @Override
-    public Address addAddress(Address address) {
+    @Transactional
+    public Address addAddress(Integer userId, AddressDTO addressDTO) {
+        // 1. Find the user this address will belong to
+        User user = usersRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+
+        // 2. Use the mapper to create an Address entity from the DTO and User
+        Address address = addressMapper.toAddressEntity(addressDTO, user);
+
+        // 3. If the new address is set as default, unset any other default addresses for that user
         if (address.isDefault()) {
-            // Unset other default addresses for the user
-            List<Address> existing = addressRepository.findByUserId(address.getUser().getId());
-            for (Address addr : existing) {
-                if (addr.isDefault()) {
-                    addr.setDefault(false);
-                    addressRepository.save(addr);
+            addressRepository.findByUserId(userId).forEach(oldAddress -> {
+                if (oldAddress.isDefault()) {
+                    oldAddress.setDefault(false);
+                    addressRepository.save(oldAddress);
                 }
-            }
+            });
         }
+
+        // 4. Save the new address
         return addressRepository.save(address);
     }
 
@@ -39,20 +57,28 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
+    @Transactional
     public Address setDefaultAddress(Long addressId, Integer userId) {
-        List<Address> addresses = addressRepository.findByUserId(userId);
-        Address target = addressRepository.findById(addressId).orElse(null);
+        // Find the address that needs to be set as default
+        Address targetAddress = addressRepository.findById(addressId)
+                .orElseThrow(() -> new IllegalArgumentException("Address not found with id: " + addressId));
 
-        if (target == null || !target.getUser().getId().equals(userId)) {
-            throw new IllegalArgumentException("Address not found or does not belong to user");
+        // Verify the address belongs to the user
+        if (!targetAddress.getUser().getId().equals(userId)) {
+            throw new IllegalArgumentException("Address does not belong to the user");
         }
 
-        for (Address addr : addresses) {
-            addr.setDefault(addr.getAddressId().equals(addressId));
-            addressRepository.save(addr);
-        }
+        // Unset the old default address
+        addressRepository.findByUserId(userId).forEach(address -> {
+            if (address.isDefault()) {
+                address.setDefault(false);
+                addressRepository.save(address);
+            }
+        });
 
-        return target;
+        // Set the new default address
+        targetAddress.setDefault(true);
+        return addressRepository.save(targetAddress);
     }
 
     @Override
