@@ -14,7 +14,6 @@
           <h3>Danger Zone</h3>
         </div>
         <div class="card-content">
-          <button class="danger-btn">Reset All Settings</button>
           <button class="danger-btn delete">Delete Account</button>
         </div>
       </div>
@@ -35,7 +34,11 @@
               <label for="email">Email Address</label>
               <input id="email" type="email" [(ngModel)]="profile.email" name="email">
             </div>
-             <div class="input-group">
+            <div class="input-group">
+              <label for="password">New Password (optional)</label>
+              <input id="password" type="password" [(ngModel)]="profile.password" name="password" placeholder="Leave blank to keep current password">
+            </div>
+            <div class="input-group">
               <label for="role">Role</label>
               <input id="role" type="text" [value]="profile.role" name="role" disabled>
             </div>

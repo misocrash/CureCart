@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CartService, CartItem } from '../../services/cart.service';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 interface Medicine {
   id: string; name: string; category: string; stock: number; price: number; description: string;
@@ -78,9 +80,40 @@ export class BrowseMedicinesComponent implements OnInit {
   }
 
   addToCart(medicine: Medicine) {
-    this.cartService.addToCart({
-      id: medicine.id, name: medicine.name, price: medicine.price, quantity: 1
+    const userId = localStorage.getItem('userId');
+    const authToken = localStorage.getItem('authToken');
+
+    if (!userId) {
+      alert('You must be logged in to add items to the cart.');
+      // Optionally, redirect to login page
+      // this.router.navigate(['/signin']);
+      return;
+    }
+
+    const apiUrl = `http://localhost:8099/api/users/${userId}/cart/items`;
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${authToken}`
     });
-    alert(`${medicine.name} added to cart!`);
+
+    const payload = {
+      medicineId: +medicine.id, // Convert string id to number
+      quantity: 1 // Default quantity when adding from browse page
+    };
+
+    this.http.post(apiUrl, payload, { headers }).pipe(
+      catchError(err => {
+        console.error('Error adding item to cart:', err);
+        alert(`Failed to add ${medicine.name} to the cart. Please try again.`);
+        return of(null); // Stop the RxJS chain
+      })
+    ).subscribe(response => {
+      if (response) {
+        console.log('Item added to cart successfully:', response);
+        alert(`${medicine.name} has been added to your cart!`);
+        // Optionally, update a cart count in the UI
+        // this.cartService.incrementCartCount();
+      }
+    });
   }
 }

@@ -4,6 +4,15 @@ import { Router } from '@angular/router';
 
 export type UserRole = 'admin' | 'user' | null;
 
+
+export interface User {
+  id: number;
+  name: string;
+  email: string;
+  role: 'ADMIN' | 'USER';
+}
+
+
 @Injectable({
   providedIn: 'root'
 })
@@ -25,12 +34,15 @@ login(email: string, password: string, role: 'admin' | 'user'): void {
   const loginData = { email, password }; // Prepare the request payload
   console.log(loginData);
 
-  this.http.post<{ token: string, user: { role: UserRole | null } }>(`${this.apiUrl}`, loginData).subscribe({
+  this.http.post<{ token: string, user: User}>(`${this.apiUrl}`, loginData).subscribe({
     next: (response) => {
       console.log('Login successful', response);
 
       // Store the token in localStorage for subsequent API calls
       localStorage.setItem('authToken', response.token);
+      localStorage.setItem('userId', response.user.id.toString());
+      localStorage.setItem('userName', response.user.name);
+      localStorage.setItem('userEmail', response.user.email);
 
       // Check if the role exists and normalize it to lowercase
       if (response.user && response.user.role) {
