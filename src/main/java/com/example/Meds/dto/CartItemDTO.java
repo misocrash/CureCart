@@ -10,7 +10,7 @@ import lombok.AllArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CartItemDTO {
-    @NotNull
+//    @NotNull
     private Long cartId;
     @NotNull private Long medicineId;
     @Positive

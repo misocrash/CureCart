@@ -10,7 +10,7 @@ import lombok.AllArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderRequestDTO {
-    @NotNull
+//    @NotNull
     private Integer userId;
     @NotNull private Long addressId;
 }

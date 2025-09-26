@@ -18,7 +18,7 @@ public class AddressDTO {
     @NotBlank private String postalCode;
     @NotBlank private String country;
     private boolean isDefault;
-    @NotNull
+//    @NotNull
     private Integer userId;
 }
 
