@@ -1,0 +1,80 @@
+/* Header and Filters Styling */
+.browse-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.filters {
+  display: flex;
+  gap: 16px;
+}
+
+/* Original, simpler search bar style */
+.search-bar input, select {
+  padding: 10px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color: white;
+  min-width: 200px;
+}
+
+/* Card Layout Fix */
+.medicines-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.card {
+  display: flex; /* Ensures the card itself can manage its children's layout */
+}
+
+.card-content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column; /* Stacks children vertically */
+  flex-grow: 1; /* Allows the content to fill the card's height */
+}
+
+.medicine-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.medicine-category {
+  font-size: 0.8rem;
+  color: #666;
+  margin: 4px 0 12px 0;
+}
+
+.medicine-description {
+  font-size: 0.9rem;
+  color: #444;
+  flex-grow: 1; /* This is the key: it takes up all available space, pushing the footer down */
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #f1f5f9;
+  padding-top: 16px;
+  margin-top: 16px; /* Ensures space between description and footer */
+}
+
+.medicine-price {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.add-to-cart-button {
+  border: none;
+  background-color: #3b82f6;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}

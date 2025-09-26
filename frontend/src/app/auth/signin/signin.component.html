@@ -1,0 +1,35 @@
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="header">
+      <div class="logo">🩺</div>
+      <h2>Sign In to MediTrack</h2>
+    </div>
+    <form (ngSubmit)="onSubmit()" class="form">
+      <div class="input-group">
+        <label for="email">Email Address</label>
+        <input id="email" [(ngModel)]="email" name="email" type="email" placeholder="Enter your email" required>
+      </div>
+      <div class="input-group">
+        <label for="password">Password</label>
+        <input id="password" [(ngModel)]="password" name="password" type="password" placeholder="Enter your password" required>
+      </div>
+      <div class="role-selector">
+        <button type="button" (click)="selectedRole = 'user'" [class.selected]="selectedRole === 'user'">
+          <div class="role-title">User</div>
+          <div class="role-desc">Browse & Order</div>
+        </button>
+        <button type="button" (click)="selectedRole = 'admin'" [class.selected]="selectedRole === 'admin'">
+          <div class="role-title">Admin</div>
+          <div class="role-desc">Manage Inventory</div>
+        </button>
+      </div>
+      <div *ngIf="!selectedRole" class="error-message">
+        <p>Please select a role before signing in.</p>
+      </div>
+      <button type="submit" class="submit-button" [disabled]="!selectedRole">Sign In</button>
+    </form>
+    <div class="switch-link">
+      <p>Don't have an account? <a routerLink="/signup">Sign up</a></p>
+    </div>
+  </div>
+</div>

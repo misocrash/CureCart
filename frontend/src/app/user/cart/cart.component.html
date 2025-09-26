@@ -1,0 +1,43 @@
+<div class="page-container">
+  <h1>Your Cart</h1>
+  <p>Review the items in your cart before proceeding to checkout.</p>
+
+  <div class="card">
+    <div *ngIf="cartItems.length > 0; else emptyCart">
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Quantity</th>
+              <th>Price</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of cartItems">
+              <td class="product-name">{{ item.name }}</td>
+              <td>{{ item.quantity }}</td>
+              <td>${{ item.price.toFixed(2) }}</td>
+              <td class="total-price">${{ (item.quantity * item.price).toFixed(2) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="cart-summary">
+        <div class="summary-total">
+          <strong>Grand Total:</strong>
+          <span>${{ totalAmount.toFixed(2) }}</span>
+        </div>
+        <button (click)="proceedToCheckout()" class="checkout-button">Proceed to Checkout</button>
+      </div>
+    </div>
+
+    <ng-template #emptyCart>
+      <div class="empty-cart-message">
+        <p>Your cart is empty.</p>
+        <a routerLink="/browse-medicines" class="browse-link">Start Shopping</a>
+      </div>
+    </ng-template>
+  </div>
+</div>

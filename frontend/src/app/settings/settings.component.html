@@ -1,0 +1,47 @@
+<div class="page-container">
+  <h1>Settings</h1>
+  <p>Manage your account and system preferences.</p>
+
+  <div class="settings-grid">
+    <div class="card">
+      <div class="card-header">
+        <h2>Profile Settings</h2>
+      </div>
+      <div class="card-content">
+        <form (ngSubmit)="onProfileSubmit()" class="form">
+          <div class="input-group">
+            <label for="name">Full Name</label>
+            <input id="name" type="text" [(ngModel)]="profile.name" name="name">
+          </div>
+          <div class="input-group">
+            <label for="email">Email Address</label>
+            <input id="email" type="email" [(ngModel)]="profile.email" name="email">
+          </div>
+          <button type="submit" class="save-button">Save Changes</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h2>Notification Settings</h2>
+      </div>
+      <div class="card-content">
+        <div class="notification-list">
+          <div class="notification-item">
+            <label for="lowStock">Low Stock Alerts</label>
+            <input id="lowStock" type="checkbox" [(ngModel)]="notifications.lowStock" name="lowStock">
+          </div>
+          <div class="notification-item">
+            <label for="newOrders">New Order Confirmations</label>
+            <input id="newOrders" type="checkbox" [(ngModel)]="notifications.newOrders" name="newOrders">
+          </div>
+          <div class="notification-item">
+            <label for="systemUpdates">System Updates</label>
+            <input id="systemUpdates" type="checkbox" [(ngModel)]="notifications.systemUpdates" name="systemUpdates">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,48 @@
+<div class="page-container">
+  <h1>My Profile</h1>
+  <p>Manage your account settings and preferences.</p>
+
+  <div class="profile-grid">
+    <div class="left-column">
+      <div class="card profile-card">
+        <h2>{{ profile.name }}</h2>
+        <p>{{ profile.email }}</p>
+      </div>
+
+      <div class="card danger-zone">
+        <div class="card-header">
+          <h3>Danger Zone</h3>
+        </div>
+        <div class="card-content">
+          <button class="danger-btn">Reset All Settings</button>
+          <button class="danger-btn delete">Delete Account</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="right-column">
+      <div class="card">
+        <div class="card-header">
+          <h3>Profile Settings</h3>
+        </div>
+        <div class="card-content">
+          <form (ngSubmit)="onProfileSubmit()" class="form">
+            <div class="input-group">
+              <label for="name">Full Name</label>
+              <input id="name" type="text" [(ngModel)]="profile.name" name="name">
+            </div>
+            <div class="input-group">
+              <label for="email">Email Address</label>
+              <input id="email" type="email" [(ngModel)]="profile.email" name="email">
+            </div>
+             <div class="input-group">
+              <label for="role">Role</label>
+              <input id="role" type="text" [value]="profile.role" name="role" disabled>
+            </div>
+            <button type="submit" class="save-button">Save Changes</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

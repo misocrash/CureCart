@@ -1,0 +1,7 @@
+.card-content { padding: 24px; }
+.form { display: flex; flex-direction: column; gap: 16px; }
+.input-group { display: flex; flex-direction: column; gap: 6px; }
+.input-group label { font-weight: 500; font-size: 14px; }
+.input-group input { padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.submit-button { border: none; padding: 12px; border-radius: 6px; background-color: #16a34a; color: white; font-size: 1rem; cursor: pointer; margin-top: 16px; }
