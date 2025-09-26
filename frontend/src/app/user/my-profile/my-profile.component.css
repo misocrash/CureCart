@@ -1,0 +1,94 @@
+/* --- Main Layout --- */
+.profile-grid {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 24px;
+}
+
+.left-column, .right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.card-header {
+  padding: 16px;
+  border-bottom: 1px solid #e2e8f0;
+}
+.card-header h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+}
+.card-content {
+  padding: 24px;
+}
+
+/* --- Profile Card (Left) --- */
+.profile-card {
+  text-align: center;
+  padding: 32px 24px;
+}
+.profile-card h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+}
+.profile-card p {
+  color: #64748b;
+  margin: 4px 0 0 0; /* Adjusted margin */
+}
+
+/* --- Danger Zone (Left) --- */
+.danger-zone .card-header { border-color: #fecaca; }
+.danger-zone h3 { color: #b91c1c; }
+.danger-zone .card-content { display: flex; flex-direction: column; gap: 12px; }
+.danger-btn {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #fca5a5;
+  background: #fff1f2;
+  color: #b91c1c;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.danger-btn.delete {
+  background-color: #b91c1c;
+  color: white;
+  border-color: #b91c1c;
+}
+
+/* --- Form Styles (Right) --- */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.input-group label {
+  font-weight: 500;
+}
+.input-group input {
+  padding: 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+}
+.input-group input:disabled {
+  background-color: #f1f5f9;
+  cursor: not-allowed;
+}
+.save-button {
+  align-self: flex-start;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+}

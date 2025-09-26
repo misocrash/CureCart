@@ -1,0 +1,49 @@
+.settings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 24px;
+}
+.card-content {
+  padding: 16px;
+}
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.input-group {
+  display: flex;
+  flex-direction: column;
+}
+label {
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+input[type="text"], input[type="email"] {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.save-button {
+  align-self: flex-start;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.notification-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.notification-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+}
