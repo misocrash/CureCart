@@ -1,11 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 
 interface Medicine {
-  manufacturer: string;
-  category: string;
-  stock: number;
-  price: number;
+  id: string; 
+  name: string; 
+  category: string; 
+  stock: number; 
+  price: number; 
+  description: string;
 }
 
 @Component({
@@ -15,17 +18,45 @@ interface Medicine {
   templateUrl: './medicines-list.component.html',
   styleUrls: ['./medicines-list.component.css']
 })
-export class MedicinesListComponent {
-  medicines: Medicine[] = [
-    { manufacturer: 'Paracetamol 500mg', category: 'Pain Relief', stock: 450, price: 12.99 },
-    { manufacturer: 'Amoxicillin 250mg', category: 'Antibiotics', stock: 89, price: 24.50 },
-    { manufacturer: 'Ibuprofen 400mg', category: 'Pain Relief', stock: 234, price: 18.75 },
-    { manufacturer: 'Insulin Pen', category: 'Diabetes', stock: 45, price: 125.00 },
-    { manufacturer: 'Blood Pressure Monitor', category: 'Equipment', stock: 12, price: 85.99 },
-    { manufacturer: 'Cough Syrup', category: 'Respiratory', stock: 156, price: 15.25 },
-  ];
+export class MedicinesListComponent implements OnInit {
+  allMedicines: Medicine[] = [];
+
+  private allMedicineUrl = 'http://localhost:8099/api/medicines';
+
+  constructor(private http: HttpClient) { }
+
+  ngOnInit(): void {
+      this.fetchAllMedicines();
+  }
+  
+  fetchAllMedicines() {
+    const authToken = localStorage.getItem('authToken');
+    const headers = authToken ? { 'Authorization': `Bearer ${authToken}` } : {};
+
+    this.http.get<any[]>(this.allMedicineUrl, { headers: headers as { [header: string]: string | string[] } }).subscribe({
+      next: (response) => {
+        // Transform the response to match the Medicine interface
+        this.allMedicines = response.map(med => ({
+          id: med.id.toString(),
+          name: med.name,
+          category: med.compositionText || 'Uncategorized', // Use compositionText as category
+          stock: med.stock,
+          price: med.price,
+          description: med.description || `${med.pack_size} by ${med.manufacture_name}`
+        }));
+      },
+      error: (error) => {
+        console.error('Failed to fetch medicines:', error);
+        alert('Failed to load medicines. Please try again later.');
+      }
+    });
+  }
 
   isLowStock(stock: number): boolean {
-    return stock < 50; // Example threshold for low stock
+    return stock < 50; // Threshold
+  }
+
+  isEmptyStock(stock: number): boolean {
+    return stock === 0;
   }
 }

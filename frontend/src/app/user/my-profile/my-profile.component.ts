@@ -89,6 +89,11 @@ export class MyProfileComponent implements OnInit {
         this.profile.password = ''; // Clear the password field
 
         alert('Profile updated successfully!');
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('userId');
+        localStorage.removeItem('userName');
+        localStorage.removeItem('userEmail');
+        localStorage.removeItem('userRole');
         this.router.navigate(['/signin']);
       }
       this.isSaving = false;

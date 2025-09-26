@@ -47,6 +47,7 @@ login(email: string, password: string, role: 'admin' | 'user'): void {
       // Check if the role exists and normalize it to lowercase
       if (response.user && response.user.role) {
         this.currentUserRole = response.user.role.toLowerCase() as UserRole;
+        console.log('User role:', this.currentUserRole);
         localStorage.setItem('userRole', this.currentUserRole as string);
         // Navigate based on the user's role
         if (this.currentUserRole === 'admin') {
@@ -71,6 +72,9 @@ login(email: string, password: string, role: 'admin' | 'user'): void {
   logout(): void {
     localStorage.removeItem('authToken');
     localStorage.removeItem('userRole');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('userName');
+    localStorage.removeItem('userEmail');
     this.currentUserRole = null;
     this.router.navigate(['/signin']);
   }

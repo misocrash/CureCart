@@ -1,23 +1,36 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
 
-// Define the structure for an item within an order
+// Matches OrderItemResponseDTO
 interface OrderItem {
-  medicine: string;
+  orderItemId: number;
+  medicineName: string;
   quantity: number;
-  price: number;
+  priceAtPurchase: number | null;
 }
 
-// Update the main Order interface
-type OrderStatus = 'pending' | 'shipped';
+// Matches AddressResponseDTO
+interface Address {
+  line1: string;
+  line2: string | null;
+  city: string;
+  state: string;
+  postalCode: string;
+}
+
+// Matches OrderResponseDTO
+type OrderStatus = 'PENDING' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED';
 interface Order {
-  id: string;
-  date: string;
-  customer: string;
-  items: number;
-  total: number;
+  orderId: number;
+  userId: number;
+  address: Address;
+  totalAmount: number;
   status: OrderStatus;
-  orderItems: OrderItem[]; // Add a list of items
+  createdAt: string;
+  items: OrderItem[];
 }
 
 @Component({
@@ -27,27 +40,81 @@ interface Order {
   templateUrl: './admin-orders.component.html',
   styleUrls: ['./admin-orders.component.css']
 })
-export class AdminOrdersComponent {
-  // Add detailed item data to the mock orders
-  orders: Order[] = [
-    { 
-      id: 'ORD-001', date: 'Jan 15, 2024', customer: 'John Smith', items: 3, total: 48.48, status: 'pending',
-      orderItems: [
-        { medicine: 'Paracetamol 500mg', quantity: 2, price: 12.99 },
-        { medicine: 'Vitamin D3', quantity: 1, price: 22.50 }
-      ]
-    },
-    { 
-      id: 'ORD-002', date: 'Jan 14, 2024', customer: 'Maria Garcia', items: 1, total: 135.00, status: 'shipped',
-      orderItems: [
-        { medicine: 'Insulin Pen', quantity: 1, price: 135.00 }
-      ]
-    },
-  ];
+export class AdminOrdersComponent implements OnInit {
+  allOrders: Order[] = [];
+  pendingActionOrders: Order[] = [];
+  processedOrders: Order[] = [];
 
   isModalOpen = false;
   selectedOrder: Order | null = null;
 
+
+  private ordersApiUrl = 'http://localhost:8099/api/users/2/orders/admin';
+
+  constructor(private http: HttpClient) { }
+
+  ngOnInit(): void {
+    this.fetchOrders();
+  }
+
+  fetchOrders() {
+    const authToken = localStorage.getItem('authToken');
+    const headers = authToken ? { 'Authorization': `Bearer ${authToken}` } : {};
+
+    this.http.get<Order[]>(this.ordersApiUrl, { headers: headers as { [header: string]: string | string[] } }).pipe(
+      catchError(err => {
+        console.error('Error fetching orders:', err);
+        return of([]);
+      })
+    ).subscribe(orders => {
+      console.log(orders);
+      this.allOrders = orders.map(o => ({ ...o, customerName: `User #${o.userId}` })); // Add customer name placeholder
+      this.filterOrders();
+    });
+  }
+
+  filterOrders() {
+    this.pendingActionOrders = this.allOrders.filter(o => o.status === 'PENDING');
+    this.processedOrders = this.allOrders.filter(o => o.status !== 'PENDING');
+  }
+
+  // --- Order Actions ---
+  shipOrder(orderToShip: Order) {
+    this.updateOrderStatus(orderToShip.orderId, 'SHIPPED');
+  }
+
+  cancelOrder(orderToCancel: Order) {
+    this.updateOrderStatus(orderToCancel.orderId, 'CANCELLED');
+  }
+
+  updateOrderStatus(orderId: number, newStatus: OrderStatus) {
+    const authToken = localStorage.getItem('authToken');
+    const headers = authToken ? { 'Authorization': `Bearer ${authToken}` } : {};
+    const updateUrl = `${this.ordersApiUrl}/${orderId}/status`;
+
+    // The body should match what the backend expects, e.g., { "status": "SHIPPED" }
+    const payload = { status: newStatus };
+
+    this.http.put(updateUrl, payload, { headers: headers as { [header: string]: string | string[] } }).pipe(
+      catchError(err => {
+        console.error(`Failed to update order ${orderId} to ${newStatus}`, err);
+        alert(`Error updating order status. Please try again.`);
+        return of(null);
+      })
+    ).subscribe(response => {
+      if (response) {
+        console.log(`Order ${orderId} successfully updated to ${newStatus}`);
+        // Find the order in the local array and update its status
+        const order = this.allOrders.find(o => o.orderId === orderId);
+        if (order) {
+          order.status = newStatus;
+          this.filterOrders(); // Re-filter the lists to move the order
+        }
+      }
+    });
+  }
+
+  // --- Modal Logic ---
   viewOrder(order: Order) {
     this.selectedOrder = order;
     this.isModalOpen = true;
@@ -58,11 +125,16 @@ export class AdminOrdersComponent {
     this.selectedOrder = null;
   }
 
+  // --- Stat Getters ---
   get pendingOrdersCount(): number {
-    return this.orders.filter(o => o.status === 'pending').length;
+    return this.allOrders.filter(o => o.status === 'PENDING').length;
   }
 
   get shippedOrdersCount(): number {
-    return this.orders.filter(o => o.status === 'shipped').length;
+    return this.allOrders.filter(o => o.status === 'SHIPPED' || o.status === 'DELIVERED').length;
+  }
+
+  get totalRevenue(): number {
+    return this.allOrders.reduce((sum, order) => sum + order.totalAmount, 0);
   }
 }

@@ -18,7 +18,6 @@ import { AdminLayoutComponent } from './admin/admin-layout/admin-layout.componen
 import { MedicinesListComponent } from './admin/medicines-list/medicines-list.component';
 import { ManageMedicinesComponent } from './admin/manage-medicines/manage-medicines.component';
 import { AdminOrdersComponent } from './admin/admin-orders/admin-orders.component';
-import { AdminOrderHistoryComponent } from './admin/admin-order-history/admin-order-history.component';
 
 export const routes: Routes = [
   { path: 'signin', component: SignInComponent },
@@ -43,8 +42,7 @@ export const routes: Routes = [
       { path: '', redirectTo: 'medicines', pathMatch: 'full' },
       { path: 'medicines', component: MedicinesListComponent },
       { path: 'manage-medicines', component: ManageMedicinesComponent },
-      { path: 'orders', component: AdminOrdersComponent },
-      { path: 'order-history', component: AdminOrderHistoryComponent },
+      { path: 'orders', component: AdminOrdersComponent }
     ]
   },
   { path: '**', redirectTo: 'signin' }

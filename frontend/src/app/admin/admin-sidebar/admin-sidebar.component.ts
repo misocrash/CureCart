@@ -15,8 +15,7 @@ export class AdminSidebarComponent {
   menuItems = [
     { label: 'Medicines List', icon: '📋', link: '/admin/medicines' },
     { label: 'Manage Medicines', icon: '⚙️', link: '/admin/manage-medicines' },
-    { label: 'Orders', icon: '🛒', link: '/admin/orders' },
-    { label: 'Order History', icon: '📜', link: '/admin/order-history' },
+    { label: 'Orders', icon: '🛒', link: '/admin/orders' }
   ];
 
   constructor(private authService: AuthService) {}

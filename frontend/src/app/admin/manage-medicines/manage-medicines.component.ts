@@ -1,9 +1,41 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 interface Medicine {
-  id: string; name: string; category: string; stock: number; price: number; minStock: number;
+  id: string; 
+  name: string; 
+  category: string; // This is compositionText
+  stock: number; 
+  price: number; 
+  description: string;
+  manufacture_name: string;
+  pack_size: string;
+}
+
+
+interface MedicineUpdatePayload {
+  name: string;
+  description: string;
+  price: number;
+  stock: number;
+  manufacture_name: string;
+  pack_size: string;
+  compositionText: string;
+}
+
+interface MedicineResponse {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  stock: number;
+  manufacture_name: string;
+  pack_size: string;
+  compositionText: string;
 }
 
 @Component({
@@ -13,39 +45,156 @@ interface Medicine {
   templateUrl: './manage-medicines.component.html',
   styleUrls: ['./manage-medicines.component.css']
 })
-export class ManageMedicinesComponent {
-  medicines: Medicine[] = [
-    { id: '1', name: 'Paracetamol 500mg', category: 'Pain Relief', stock: 450, price: 12.99, minStock: 100 },
-    { id: '2', name: 'Amoxicillin 250mg', category: 'Antibiotics', stock: 89, price: 24.50, minStock: 50 },
-  ];
+export class ManageMedicinesComponent implements OnInit {
+  allMedicines: Medicine[] = [];
   
-  isDialogOpen = false;
+  isAddDialogOpen = false;
+  isEditDialogOpen = false;
   editingMedicine: Medicine | null = null;
-  formData: any = {};
+  
+  addFormData: any = {};
+  editFormData: any = {};
+
+  private allMedicineUrl = 'http://localhost:8099/api/medicines';
+  private editMedicineUrl = 'http://localhost:8099/api/medicines/'; 
+  private deleteMedicineUrl = 'http://localhost:8099/api/medicines/';
+
+
+  constructor(private http: HttpClient) { }
+
+  ngOnInit(): void {
+      this.fetchMedicines();
+  }
+
+  fetchMedicines() {
+    const authToken = localStorage.getItem('authToken');
+    const headers = authToken ? { 'Authorization': `Bearer ${authToken}` } : {};
+
+    this.http.get<any[]>(this.allMedicineUrl, { headers: headers as { [header: string]: string | string[] } }).subscribe({
+      next: (response) => {
+        // Transform the response to match the Medicine interface
+        this.allMedicines = response.map(med => ({
+          id: med.id.toString(),
+          name: med.name,
+          category: med.compositionText || 'Uncategorized', // Use compositionText as category
+          stock: med.stock,
+          price: med.price,
+          description: med.description || '',
+          manufacture_name: med.manufacture_name || '',
+          pack_size: med.pack_size || ''
+        }));
+      },
+      error: (error) => {
+        console.error('Failed to fetch medicines:', error);
+        alert('Failed to load medicines. Please try again later.');
+      }
+    });
+  }
 
   openAddDialog() {
     this.editingMedicine = null;
-    this.formData = { name: '', category: '', stock: 0, price: 0, minStock: 0 };
-    this.isDialogOpen = true;
+    this.addFormData = { 
+      name: '', 
+      description: '',
+      price: 0, 
+      stock: 0, 
+      manufacture_name: '',
+      pack_size: '',
+      category: '' // Corresponds to compositionText
+    };
+    this.isAddDialogOpen = true;
   }
 
   openEditDialog(medicine: Medicine) {
     this.editingMedicine = medicine;
-    this.formData = { ...medicine };
-    this.isDialogOpen = true;
+    // Only populate the fields needed for editing
+    this.editFormData = {
+      name: medicine.name,
+      description: medicine.description,
+      price: medicine.price,
+      stock: medicine.stock,
+      category: medicine.category
+    };
+    this.isEditDialogOpen = true;
   }
 
-  closeDialog() {
-    this.isDialogOpen = false;
+  closeDialogs() {
+    this.isAddDialogOpen = false;
+    this.isEditDialogOpen = false;
   }
 
-  onFormSubmit() {
-    if (this.editingMedicine) {
-      const index = this.medicines.findIndex(m => m.id === this.editingMedicine!.id);
-      if (index > -1) this.medicines[index] = { ...this.formData, id: this.editingMedicine.id };
-    } else {
-      this.medicines.push({ ...this.formData, id: Date.now().toString() });
-    }
-    this.closeDialog();
+  onAddSubmit() {
+    const authToken = localStorage.getItem('authToken');
+    const headers = authToken ? { 'Authorization': `Bearer ${authToken}` } : {};
+
+    const payload = {
+      name: this.addFormData.name,
+      description: this.addFormData.description,
+      price: this.addFormData.price,
+      stock: this.addFormData.stock,
+      manufacture_name: this.addFormData.manufacture_name,
+      pack_size: this.addFormData.pack_size,
+      compositionText: this.addFormData.category
+    };
+
+    this.http.post<MedicineResponse>(this.allMedicineUrl, payload, { headers: headers as { [header:string]: string | string[] } }).pipe(
+      catchError(err => {
+        console.error('Failed to add medicine', err);
+        alert('An error occurred while adding the new medicine.');
+        return of(null);
+      })
+    ).subscribe(response => {
+      if (response) {
+        console.log('Medicine added successfully', response);
+        this.fetchMedicines(); 
+      }
+    });
+    this.closeDialogs();
+  }
+
+  onEditSubmit() {
+    if (!this.editingMedicine) return;
+
+    const authToken = localStorage.getItem('authToken');
+    const headers = authToken ? { 'Authorization': `Bearer ${authToken}` } : {};
+
+    const payload = {
+      name: this.editFormData.name,
+      description: this.editFormData.description,
+      price: this.editFormData.price,
+      stock: this.editFormData.stock,
+      compositionText: this.editFormData.category
+    };
+
+    const updateUrl = `${this.editMedicineUrl}${this.editingMedicine.id}`;
+    this.http.put<MedicineResponse>(updateUrl, payload, { headers: headers as { [header: string]: string | string[] } }).pipe(
+      catchError(err => {
+        console.error('Medicine update failed', err);
+        alert('An error occurred while updating the medicine.');
+        return of(null);
+      })
+    ).subscribe(response => {
+      if (response) {
+        console.log('Medicine updated successfully', response);
+        this.fetchMedicines(); // Refresh the list
+      }
+    });
+    this.closeDialogs();
+  }
+
+  deleteMed(medicine: Medicine) {
+
+    const authToken = localStorage.getItem('authToken');
+    const headers = authToken ? { 'Authorization': `Bearer ${authToken}` } : {};
+    this.http.delete(`${this.deleteMedicineUrl}${medicine.id}`, {headers: headers as { [header: string]: string | string[] }}).subscribe({
+        next: () => {
+          console.log('Medicine deleted successfully');
+          this.fetchMedicines(); 
+        },
+        error: (error) => {
+          console.error('Failed to delete medicine:', error);
+          alert('Failed to delete medicine. Please try again later.');
+        }
+      });
   }
 }
