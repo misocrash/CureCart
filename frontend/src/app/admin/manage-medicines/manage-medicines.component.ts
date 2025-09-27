@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { environment } from '../../../environments/environment.development';
 
 interface Medicine {
   id: string; 
@@ -55,10 +56,6 @@ export class ManageMedicinesComponent implements OnInit {
   addFormData: any = {};
   editFormData: any = {};
 
-  private allMedicineUrl = 'http://localhost:8099/api/medicines';
-  private editMedicineUrl = 'http://localhost:8099/api/medicines/'; 
-  private deleteMedicineUrl = 'http://localhost:8099/api/medicines/';
-
 
   constructor(private http: HttpClient) { }
 
@@ -70,7 +67,7 @@ export class ManageMedicinesComponent implements OnInit {
     const authToken = localStorage.getItem('authToken');
     const headers = authToken ? { 'Authorization': `Bearer ${authToken}` } : {};
 
-    this.http.get<any[]>(this.allMedicineUrl, { headers: headers as { [header: string]: string | string[] } }).subscribe({
+    this.http.get<any[]>(environment.endpoints.medicineBaseEndpoint, { headers: headers as { [header: string]: string | string[] } }).subscribe({
       next: (response) => {
         // Transform the response to match the Medicine interface
         this.allMedicines = response.map(med => ({
@@ -137,7 +134,7 @@ export class ManageMedicinesComponent implements OnInit {
       compositionText: this.addFormData.category
     };
 
-    this.http.post<MedicineResponse>(this.allMedicineUrl, payload, { headers: headers as { [header:string]: string | string[] } }).pipe(
+    this.http.post<MedicineResponse>(environment.endpoints.medicineBaseEndpoint, payload, { headers: headers as { [header:string]: string | string[] } }).pipe(
       catchError(err => {
         console.error('Failed to add medicine', err);
         alert('An error occurred while adding the new medicine.');
@@ -166,7 +163,7 @@ export class ManageMedicinesComponent implements OnInit {
       compositionText: this.editFormData.category
     };
 
-    const updateUrl = `${this.editMedicineUrl}${this.editingMedicine.id}`;
+    const updateUrl = `${environment.endpoints.medicineBaseEndpoint}/${this.editingMedicine.id}`;
     this.http.put<MedicineResponse>(updateUrl, payload, { headers: headers as { [header: string]: string | string[] } }).pipe(
       catchError(err => {
         console.error('Medicine update failed', err);
@@ -186,7 +183,7 @@ export class ManageMedicinesComponent implements OnInit {
 
     const authToken = localStorage.getItem('authToken');
     const headers = authToken ? { 'Authorization': `Bearer ${authToken}` } : {};
-    this.http.delete(`${this.deleteMedicineUrl}${medicine.id}`, {headers: headers as { [header: string]: string | string[] }}).subscribe({
+    this.http.delete(`${environment.endpoints.medicineBaseEndpoint}/${medicine.id}`, {headers: headers as { [header: string]: string | string[] }}).subscribe({
         next: () => {
           console.log('Medicine deleted successfully');
           this.fetchMedicines(); 

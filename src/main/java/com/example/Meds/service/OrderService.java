@@ -10,4 +10,6 @@ public interface OrderService {
     List<Order> getOrdersByUserId(Integer userId);
     Order updateOrderStatus(Long orderId, OrderStatus status);
     Order getOrderById(Long orderId);
+
+    List<Order> getAllOrders();
 }

@@ -5,6 +5,7 @@ import { CartService, CartItem } from '../../services/cart.service';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { environment } from '../../../environments/environment.development';
 
 interface Medicine {
   id: string; name: string; category: string; stock: number; price: number; description: string; quantityInCart: number; cartItemId: number | null;
@@ -21,16 +22,11 @@ export class BrowseMedicinesComponent implements OnInit {
   allMedicines: Medicine[] = [];
   filteredMedicines: Medicine[] = [];
   categories: string[] = [];
-  
+
   searchTerm = '';
   selectedCategory = 'All';
-  
-  private cartUrl = `http://localhost:8099/api/users/${localStorage.getItem('userId')}/cart`;
-  private medicineUrl = 'http://localhost:8099/api/medicines'; // Replace with your API endpoint
-  
 
-
-  constructor(private http: HttpClient, private cartService: CartService) {}
+  constructor(private http: HttpClient, private cartService: CartService) { }
 
   ngOnInit() {
     this.fetchMedicines();
@@ -40,8 +36,8 @@ export class BrowseMedicinesComponent implements OnInit {
   fetchMedicines() {
     const authToken = localStorage.getItem('authToken');
     const headers = authToken ? { 'Authorization': `Bearer ${authToken}` } : {};
-    
-    this.http.get<any[]>(this.medicineUrl, { headers: headers as { [header: string]: string | string[] } }).subscribe({
+
+    this.http.get<any[]>(`${environment.endpoints.medicineBaseEndpoint}`, { headers: headers as { [header: string]: string | string[] } }).subscribe({
       next: (response) => {
         // Transform the response to match the Medicine interface
         this.allMedicines = response.map(med => ({
@@ -59,8 +55,8 @@ export class BrowseMedicinesComponent implements OnInit {
         this.syncWithCart();
       },
       error: (error) => {
-      console.error('Failed to fetch medicines:', error);
-      alert('Failed to load medicines. Please try again later.');
+        console.error('Failed to fetch medicines:', error);
+        alert('Failed to load medicines. Please try again later.');
       }
     });
   }
@@ -69,7 +65,7 @@ export class BrowseMedicinesComponent implements OnInit {
     const authToken = localStorage.getItem('authToken');
     const headers = authToken ? { 'Authorization': `Bearer ${authToken}` } : {};
 
-    this.http.get<any>(this.cartUrl, { headers: headers as { [header: string]: string | string[] } }).subscribe(cart => {
+    this.http.get<any>(`${environment.endpoints.userBaseEndpoint}/${localStorage.getItem('userId')}/cart`, { headers: headers as { [header: string]: string | string[] } }).subscribe(cart => {
       if (cart && cart.items) {
         this.allMedicines.forEach(med => {
           const itemInCart = cart.items.find((item: any) => item.medicineId === +med.id);
@@ -97,7 +93,7 @@ export class BrowseMedicinesComponent implements OnInit {
 
     // Filter by search term
     if (this.searchTerm) {
-      tempMeds = tempMeds.filter(med => 
+      tempMeds = tempMeds.filter(med =>
         med.name.toLowerCase().includes(this.searchTerm.toLowerCase())
       );
     }
@@ -113,14 +109,13 @@ export class BrowseMedicinesComponent implements OnInit {
       return;
     }
 
-    const apiUrl = `http://localhost:8099/api/users/${userId}/cart/items`;
     const headers = authToken ? { 'Authorization': `Bearer ${authToken}` } : {};
     const payload = {
       medicineId: +medicine.id,
       quantity: 1 // Always add one at a time
     };
 
-    const request = this.http.post<any>(apiUrl, payload, { headers: headers as { [header: string]: string | string[] } });
+    const request = this.http.post<any>(`${environment.endpoints.userBaseEndpoint}/${userId}/cart/items`, payload, { headers: headers as { [header: string]: string | string[] } });
 
     request.pipe(
       catchError(err => {
@@ -150,11 +145,10 @@ export class BrowseMedicinesComponent implements OnInit {
     }
 
     const headers = authToken ? { 'Authorization': `Bearer ${authToken}` } : {};
-    const deleteUrl = `http://localhost:8099/api/users/${userId}/cart/items/${medicine.cartItemId}`;
 
     const params = new HttpParams().set('quantity', medicine.quantityInCart - 1);
 
-    const request = this.http.put<any>(deleteUrl, {}, { headers: headers as { [header: string]: string | string[] }, params });
+    const request = this.http.put<any>(`${environment.endpoints.userBaseEndpoint}/${userId}/cart/items/${medicine.cartItemId}`, {}, { headers: headers as { [header: string]: string | string[] }, params });
     request.pipe(
       catchError(err => {
         console.error('Error decreasing quantity:', err);

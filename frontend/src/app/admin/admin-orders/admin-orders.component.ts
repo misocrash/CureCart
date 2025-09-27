@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { environment } from '../../../environments/environment.development';
 
 // Matches OrderItemResponseDTO
 interface OrderItem {
@@ -48,11 +49,6 @@ export class AdminOrdersComponent implements OnInit {
   isModalOpen = false;
   selectedOrder: Order | null = null;
 
-
-  // Admin should use a general endpoint for all orders
-  private ordersApiUrl = 'http://localhost:8099/api/users/5/orders';
-  private updateOrderStatusApiUrl = `http://localhost:8099/api/users/${localStorage.getItem('userId')}/orders`; // e.g., /api/orders/{orderId}/status
-
   constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
@@ -63,7 +59,7 @@ export class AdminOrdersComponent implements OnInit {
     const authToken = localStorage.getItem('authToken');
     const headers = authToken ? { 'Authorization': `Bearer ${authToken}` } : {};
 
-    this.http.get<Order[]>(this.ordersApiUrl, { headers: headers as { [header: string]: string | string[] } }).pipe(
+    this.http.get<Order[]>(`${environment.endpoints.fetchAllOrdersAdmin}`, { headers: headers as { [header: string]: string | string[] } }).pipe(
       catchError(err => {
         console.error('Error fetching orders:', err);
         return of([]);
@@ -92,7 +88,7 @@ export class AdminOrdersComponent implements OnInit {
   updateOrderStatus(orderId: number, newStatus: OrderStatus) {
     const authToken = localStorage.getItem('authToken');
     const headers = authToken ? { 'Authorization': `Bearer ${authToken}` } : {};
-    const updateUrl = `${this.updateOrderStatusApiUrl}/${orderId}/status`;
+    const updateUrl = `${environment.endpoints.userBaseEndpoint}/${localStorage.getItem('userId')}/orders/${orderId}/status`;
 
     // The backend expects 'status' as a request parameter, not in the body.
     const params = new HttpParams().set('status', newStatus);

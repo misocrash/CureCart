@@ -28,7 +28,6 @@ public class Medicine {
     @Column(name = "price", nullable = false)
     private BigDecimal price;
 
-
     private Integer stock; // Field added
 
     @Column(name="manufacture_name")

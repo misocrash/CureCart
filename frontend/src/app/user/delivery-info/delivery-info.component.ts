@@ -6,6 +6,7 @@ import { Observable, of } from 'rxjs';
 import { Address, AddressService } from '../../services/address.service';
 import { HttpClient } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
+import { environment } from '../../../environments/environment.development';
 
 // Matches the backend Address DTO
 interface BackendAddress {
@@ -47,9 +48,6 @@ export class DeliveryInfoComponent implements OnInit {
   toastMessage = '';
   toastType: 'success' | 'error' = 'success';
 
-  private addressApiUrl = `http://localhost:8099/api/users/${localStorage.getItem('userId')}/addresses`;
-  private placeOrderApiUrl = `http://localhost:8099/api/users/${localStorage.getItem('userId')}/orders`;
-
   // This object now perfectly matches the expected type in the service
   newAddress = {
     country: 'India',
@@ -78,7 +76,7 @@ export class DeliveryInfoComponent implements OnInit {
     const authToken = localStorage.getItem('authToken');
     const headers = authToken ? { 'Authorization': `Bearer ${authToken}` } : {};
 
-    this.http.get<BackendAddress[]>(this.addressApiUrl, { headers: headers as { [header: string]: string | string[] }}).pipe(
+    this.http.get<BackendAddress[]>(`${environment.endpoints.userBaseEndpoint}/${localStorage.getItem('userId')}/addresses`, { headers: headers as { [header: string]: string | string[] }}).pipe(
       catchError(err => {
         console.error('Error fetching addresses:', err);
         this.showErrorToast('Failed to load your saved addresses.');
@@ -132,7 +130,7 @@ export class DeliveryInfoComponent implements OnInit {
       userId: localStorage.getItem('userId')
     };
 
-    this.http.post<BackendAddress>(this.addressApiUrl, payload, { headers: headers as { [header: string]: string | string[] } }).pipe(
+    this.http.post<BackendAddress>(`${environment.endpoints.userBaseEndpoint}/${localStorage.getItem('userId')}/addresses`, payload, { headers: headers as { [header: string]: string | string[] } }).pipe(
       catchError(err => {
         console.error('Error adding address:', err);
         this.showErrorToast('Failed to save your new address. Please try again.');
@@ -165,7 +163,7 @@ export class DeliveryInfoComponent implements OnInit {
       addressId: +this.selectedAddressId,
     };
 
-    this.http.post(this.placeOrderApiUrl, payload, { headers: headers as { [header: string]: string | string[] } }).pipe(
+    this.http.post(`${environment.endpoints.userBaseEndpoint}/${localStorage.getItem('userId')}/orders`, payload, { headers: headers as { [header: string]: string | string[] } }).pipe(
       catchError(err => {
         console.error('Error placing order:', err);
         this.showErrorToast('Failed to place the order');

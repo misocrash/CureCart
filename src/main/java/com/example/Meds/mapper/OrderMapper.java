@@ -29,8 +29,9 @@ public class OrderMapper {
         dto.setQuantity(orderItem.getQuantity());
         // In your service, you would have set the priceAtPurchase on the OrderItem
         // dto.setPriceAtPurchase(orderItem.getPriceAtPurchase());
-
+        dto.setPriceAtPurchase(orderItem.getMedicine().getPrice());
         if (orderItem.getMedicine() != null) {
+            dto.setPriceAtPurchase(orderItem.getMedicine().getPrice());
             dto.setMedicineName(orderItem.getMedicine().getName());
         }
 

@@ -1,11 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
-import { Address, AddressService } from '../../services/address.service';
+import { AddressService } from '../../services/address.service';
+import { environment } from '../../../environments/environment.development';
+
+// Matches the backend Address DTO
+interface BackendAddress {
+  addressId: number;
+  line1: string;
+  line2: string | null;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
+  default: boolean;
+}
 
 // Matches the backend UserDTO
 interface UserUpdatePayload {
@@ -20,6 +33,17 @@ interface UserResponse {
   name: string;
   email: string;
   role: 'ADMIN' | 'USER';
+}
+
+export interface Address {
+  id: string;
+  country: string;
+  postalCode: string;
+  addressLine1: string;
+  addressLine2?: string;
+  state: string;
+  city: string;
+  isDefault: boolean;
 }
 
 @Component({
@@ -38,7 +62,7 @@ export class MyProfileComponent implements OnInit {
   };
   isSaving = false;
 
-  addresses$!: Observable<Address[]>;
+  addresses: Address[] = [];
   isAddAddressModalOpen = false;
 
   newAddress = {
@@ -46,16 +70,45 @@ export class MyProfileComponent implements OnInit {
     postalCode: '',
     addressLine1: '',
     addressLine2: '',
-    state: ''
+    state: '',
+    city: ''
   };
 
-  constructor(private http: HttpClient, private router: Router, private addressService: AddressService) {}
+  showToast = false;
+  toastMessage = '';
+  toastType: 'success' | 'error' = 'success';
+
+  constructor(private http: HttpClient, private router: Router, private addressService: AddressService) { }
 
   ngOnInit(): void {
     this.profile.name = localStorage.getItem('userName') || '';
     this.profile.email = localStorage.getItem('userEmail') || '';
     this.profile.role = localStorage.getItem('userRole')?.toUpperCase() || 'USER';
-    this.addresses$ = this.addressService.addresses$;
+    this.fetchAddresses();
+  }
+
+  fetchAddresses() {
+    const authToken = localStorage.getItem('authToken');
+    const headers = authToken ? { 'Authorization': `Bearer ${authToken}` } : {};
+
+    this.http.get<BackendAddress[]>(`${environment.endpoints.userBaseEndpoint}/${localStorage.getItem('userId')}/addresses`, { headers: headers as { [header: string]: string | string[] } }).pipe(
+      catchError(err => {
+        console.error('Error fetching addresses:', err);
+        this.showErrorToast('Failed to load your saved addresses.');
+        return of([]);
+      })
+    ).subscribe(backendAddresses => {
+      this.addresses = backendAddresses.map(addr => ({
+        id: addr.addressId.toString(),
+        country: addr.country,
+        postalCode: addr.postalCode,
+        addressLine1: addr.line1,
+        addressLine2: addr.line2 || '',
+        state: addr.state,
+        city: addr.city,
+        isDefault: addr.default
+      }));
+    });
   }
 
   onProfileSubmit() {
@@ -66,7 +119,6 @@ export class MyProfileComponent implements OnInit {
     }
 
     this.isSaving = true;
-    const apiUrl = `http://localhost:8099/api/users/${userId}`;
 
     const payload: UserUpdatePayload = {
       name: this.profile.name,
@@ -81,7 +133,7 @@ export class MyProfileComponent implements OnInit {
     const authToken = localStorage.getItem('authToken');
     const headers = authToken ? { 'Authorization': `Bearer ${authToken}` } : {};
 
-    this.http.put<UserResponse>(apiUrl, payload, { headers: headers as { [header: string]: string | string[] }}).pipe(
+    this.http.put<UserResponse>(`${environment.endpoints.userBaseEndpoint}/${userId}`, payload, { headers: headers as { [header: string]: string | string[] } }).pipe(
       catchError(err => {
         console.error('Profile update failed', err);
         alert('An error occurred while updating your profile. Please try again.');
@@ -101,22 +153,95 @@ export class MyProfileComponent implements OnInit {
         this.profile.email = response.email;
         this.profile.password = ''; // Clear the password field
 
-        alert('Profile updated successfully!');
+        this.showSuccessToast('Profile updated successfully!');
       }
       this.isSaving = false;
     });
   }
 
-  onSetDefault(id: string) { this.addressService.setDefault(id); }
-  onDeleteAddress(id: string) { this.addressService.deleteAddress(id); }
- 
+  onSetDefault(id: string) { 
+    this.addressService.onSetDefault(id).subscribe(() => {
+      this.showSuccessToast('Default address updated.');
+      // Fetch addresses only after the default has been successfully set
+      this.fetchAddresses();
+    }); 
+  }
+  // onDeleteAddress(id: string) { this.addressService.onDeleteAddress(id); }
+
   openAddAddressModal() { this.isAddAddressModalOpen = true; }
   closeAddAddressModal() { this.isAddAddressModalOpen = false; }
- 
+
   onAddAddress() {
-    this.addressService.addAddress(this.newAddress);
-    // Reset form
-    this.newAddress = { country: 'India', postalCode: '', addressLine1: '', addressLine2: '', state: '' };
-    this.closeAddAddressModal();
+    if (!this.newAddress.addressLine1 || !this.newAddress.postalCode || !this.newAddress.city || !this.newAddress.state) {
+      this.showErrorToast('Please fill out all required fields.');
+      return;
+    }
+
+    const authToken = localStorage.getItem('authToken');
+    const headers = authToken ? { 'Authorization': `Bearer ${authToken}` } : {};
+
+    const payload = {
+      line1: this.newAddress.addressLine1,
+      line2: this.newAddress.addressLine2,
+      city: this.newAddress.city,
+      state: this.newAddress.state,
+      postalCode: this.newAddress.postalCode,
+      country: this.newAddress.country,
+      isDefault: this.addresses.length === 0,
+      userId: localStorage.getItem('userId')
+    };
+
+    this.http.post<BackendAddress>(`${environment.endpoints.userBaseEndpoint}/${localStorage.getItem('userId')}/addresses`, payload, { headers: headers as { [header: string]: string | string[] } }).pipe(
+      catchError(err => {
+        console.error('Error adding address:', err);
+        this.showErrorToast('Failed to save your new address.');
+        return of(null);
+      })
+    ).subscribe(savedAddress => {
+      if (savedAddress) {
+        this.showSuccessToast('Address saved successfully!');
+        this.fetchAddresses();
+        this.closeAddAddressModal();
+        this.newAddress = { country: 'India', postalCode: '', addressLine1: '', addressLine2: '', state: '', city: '' };
+      }
+    });
+  }
+
+  // onSetDefault(addressId: string) {
+  //   const authToken = localStorage.getItem('authToken');
+  //   const headers = authToken ? { 'Authorization': `Bearer ${authToken}` } : {};
+  //   const setDefaultUrl = `${this.addressApiUrl}/${addressId}/default`;
+
+  //   this.http.put(setDefaultUrl, {}, { headers }).subscribe(() => {
+  //     this.showSuccessToast('Default address updated.');
+  //     this.fetchAddresses();
+  //   });
+  // }
+
+  // onDeleteAddress(addressId: string) {
+  //   if (confirm('Are you sure you want to delete this address?')) {
+  //     const authToken = localStorage.getItem('authToken');
+  //     const headers = authToken ? { 'Authorization': `Bearer ${authToken}` } : {};
+  //     const deleteUrl = `${this.addressApiUrl}/${addressId}`;
+
+  //     this.http.delete(deleteUrl, { headers }).subscribe(() => {
+  //       this.showSuccessToast('Address deleted.');
+  //       this.fetchAddresses();
+  //     });
+  //   }
+  // }
+
+  private showSuccessToast(message: string) {
+    this.toastMessage = message;
+    this.toastType = 'success';
+    this.showToast = true;
+    setTimeout(() => this.showToast = false, 3000);
+  }
+
+  private showErrorToast(message: string) {
+    this.toastMessage = message;
+    this.toastType = 'error';
+    this.showToast = true;
+    setTimeout(() => this.showToast = false, 3000);
   }
 }

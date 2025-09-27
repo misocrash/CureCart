@@ -7,7 +7,6 @@ import { SignupComponent } from './auth/signup/signup.component';
 import { LayoutComponent } from './layout/layout.component';
 import { BrowseMedicinesComponent } from './user/browse-medicines/browse-medicines.component';
 import { CartComponent } from './user/cart/cart.component';
-import { CheckoutComponent } from './user/checkout/checkout.component';
 import { OrderHistoryComponent } from './order-history/order-history.component';
 import { MyProfileComponent } from './user/my-profile/my-profile.component';
 import { FeedbackComponent } from './user/feedback/feedback.component';
@@ -30,7 +29,6 @@ export const routes: Routes = [
       { path: 'browse-medicines', component: BrowseMedicinesComponent },
       { path: 'cart', component: CartComponent },
       { path: 'delivery-info', component: DeliveryInfoComponent },
-      { path: 'checkout', component: CheckoutComponent },
       { path: 'orders', component: OrderHistoryComponent },
       { path: 'my-profile', component: MyProfileComponent },
       { path: 'feedback', component: FeedbackComponent },

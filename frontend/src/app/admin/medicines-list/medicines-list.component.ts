@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment.development';
 
 interface Medicine {
   id: string; 
@@ -21,8 +22,6 @@ interface Medicine {
 export class MedicinesListComponent implements OnInit {
   allMedicines: Medicine[] = [];
 
-  private allMedicineUrl = 'http://localhost:8099/api/medicines';
-
   constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
@@ -33,7 +32,7 @@ export class MedicinesListComponent implements OnInit {
     const authToken = localStorage.getItem('authToken');
     const headers = authToken ? { 'Authorization': `Bearer ${authToken}` } : {};
 
-    this.http.get<any[]>(this.allMedicineUrl, { headers: headers as { [header: string]: string | string[] } }).subscribe({
+    this.http.get<any[]>(environment.endpoints.medicineBaseEndpoint, { headers: headers as { [header: string]: string | string[] } }).subscribe({
       next: (response) => {
         // Transform the response to match the Medicine interface
         this.allMedicines = response.map(med => ({

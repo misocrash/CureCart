@@ -49,9 +49,13 @@ public class OrderServiceImpl implements OrderService {
         }
 
         // Calculate total amount from cart items
-        BigDecimal totalAmount = cartItems.stream()
+        BigDecimal subTotal = cartItems.stream()
                 .map(item -> item.getMedicine().getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        // Tax
+        BigDecimal taxRate = BigDecimal.valueOf(0.05);
+        BigDecimal totalAmount = subTotal.add(subTotal.multiply(taxRate));
 
         // Create and save the primary Order object
         Order order = new Order();
@@ -96,4 +100,10 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + orderId));
     }
+
+    @Override
+    public List<Order> getAllOrders() {
+        return orderRepository.findAll();
+    }
+
 }

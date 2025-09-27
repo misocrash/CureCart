@@ -2,11 +2,13 @@ package com.example.Meds.controller;
 
 import com.example.Meds.dto.OrderRequestDTO;
 import com.example.Meds.dto.OrderResponseDTO;
+import com.example.Meds.entity.Medicine;
 import com.example.Meds.entity.Order;
 import com.example.Meds.entity.OrderItem;
 import com.example.Meds.entity.OrderStatus;
 import com.example.Meds.mapper.OrderMapper;
 import com.example.Meds.repository.OrderItemRepository;
+import com.example.Meds.service.MedicineService;
 import com.example.Meds.service.OrderService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,12 +27,14 @@ public class OrderController {
     private final OrderService orderService;
     private final OrderMapper orderMapper;
     private final OrderItemRepository orderItemRepository;
+    private final MedicineService medicineService;
 
     @Autowired
-    public OrderController(OrderService orderService, OrderMapper orderMapper, OrderItemRepository orderItemRepository) {
+    public OrderController(OrderService orderService, OrderMapper orderMapper, OrderItemRepository orderItemRepository, MedicineService medicineService) {
         this.orderService = orderService;
         this.orderMapper = orderMapper;
         this.orderItemRepository = orderItemRepository;
+        this.medicineService = medicineService;
     }
 
     /**
@@ -65,6 +69,19 @@ public class OrderController {
 
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/admin")
+    public ResponseEntity<List<OrderResponseDTO>> getAllOrdersForAdmin() {
+        List<Order> orders = orderService.getAllOrders(); // You need to implement this in your service
+
+        List<OrderResponseDTO> response = orders.stream().map(order -> {
+            List<OrderItem> orderItems = orderItemRepository.findByOrder_OrderId(order.getOrderId());
+            return orderMapper.toOrderResponseDTO(order, orderItems);
+        }).collect(Collectors.toList());
+
+        return ResponseEntity.ok(response);
+    }
+
 
     /**
      * Retrieves a single, specific order.

@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../../environments/environment.development';
 
 interface Address {
   addressId: number;
@@ -47,7 +48,6 @@ export class OrderHistoryComponent implements OnInit {
 
   // You should get this from your authentication service
   private userId = localStorage.getItem('userId'); 
-  private apiUrl = `http://localhost:8099/api/users/${this.userId}/orders`;
 
   constructor(private http: HttpClient) {}
 
@@ -61,7 +61,7 @@ export class OrderHistoryComponent implements OnInit {
     const authToken = localStorage.getItem('authToken');
     const headers = authToken ? { 'Authorization': `Bearer ${authToken}` } : {};
 
-    this.http.get<Order[]>(this.apiUrl, { headers: headers as { [header: string]: string | string[] } })
+    this.http.get<Order[]>(`${environment.endpoints.userBaseEndpoint}/${this.userId}/orders`, { headers: headers as { [header: string]: string | string[] } })
       .pipe(
         catchError(err => {
           console.error('Error fetching orders:', err);

@@ -20,6 +20,6 @@ public class UserDTO {
     @NotBlank(message = "Email is required")
     private String email;
 
-    @Size(min= 3, message = "Password must be at least 6 characters")
+    @Size(min= 6, message = "Password must be at least 6 characters")
     private String password;
 }

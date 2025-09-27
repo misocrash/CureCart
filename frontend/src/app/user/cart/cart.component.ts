@@ -4,6 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { environment } from '../../../environments/environment.development';
 
 // Interface matching the backend response for a single cart item
 export interface CartItem {
@@ -53,10 +54,9 @@ export class CartComponent implements OnInit {
       return;
     }
 
-    const apiUrl = `http://localhost:8099/api/users/${userId}/cart`;
     const headers = authToken ? { 'Authorization': `Bearer ${authToken}` } : {};
 
-    this.http.get<CartResponse>(apiUrl, { headers: headers as { [header: string]: string | string[] } }).pipe(
+    this.http.get<CartResponse>(`${environment.endpoints.userBaseEndpoint}/${userId}/cart`, { headers: headers as { [header: string]: string | string[] } }).pipe(
       catchError(err => {
         console.error('Error fetching cart:', err);
         this.error = 'Failed to load your cart. Please try again later.';

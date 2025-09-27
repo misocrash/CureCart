@@ -9,4 +9,6 @@ public interface UserService {
     User findById(Integer id);
     User updateProfile(Integer id, UserDTO updatedUser);
     List<User> getAllUsers();
+
+//    String deleteById(int id);
 }
