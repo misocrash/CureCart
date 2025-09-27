@@ -72,7 +72,10 @@ export class CartComponent implements OnInit {
     });
   }
 
-  proceedToCheckout() {
-    this.router.navigate(['/checkout'], { state: { totalAmount: this.totalAmount, items: this.cartItems } });
+  // proceedToCheckout() {
+  //   this.router.navigate(['/checkout'], { state: { totalAmount: this.totalAmount, items: this.cartItems } });
+  // }
+    proceedToCheckout() {
+    this.router.navigate(['/delivery-info'], {state: {totalAmount: this.totalAmount, itemsCount: this.cartItems.length}});
   }
 }

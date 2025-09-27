@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { Address, AddressService } from '../../services/address.service';
 
 // Matches the backend UserDTO
 interface UserUpdatePayload {
@@ -37,12 +38,24 @@ export class MyProfileComponent implements OnInit {
   };
   isSaving = false;
 
-  constructor(private http: HttpClient, private router: Router) {}
+  addresses$!: Observable<Address[]>;
+  isAddAddressModalOpen = false;
+
+  newAddress = {
+    country: 'India',
+    postalCode: '',
+    addressLine1: '',
+    addressLine2: '',
+    state: ''
+  };
+
+  constructor(private http: HttpClient, private router: Router, private addressService: AddressService) {}
 
   ngOnInit(): void {
     this.profile.name = localStorage.getItem('userName') || '';
     this.profile.email = localStorage.getItem('userEmail') || '';
     this.profile.role = localStorage.getItem('userRole')?.toUpperCase() || 'USER';
+    this.addresses$ = this.addressService.addresses$;
   }
 
   onProfileSubmit() {
@@ -89,14 +102,21 @@ export class MyProfileComponent implements OnInit {
         this.profile.password = ''; // Clear the password field
 
         alert('Profile updated successfully!');
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('userId');
-        localStorage.removeItem('userName');
-        localStorage.removeItem('userEmail');
-        localStorage.removeItem('userRole');
-        this.router.navigate(['/signin']);
       }
       this.isSaving = false;
     });
+  }
+
+  onSetDefault(id: string) { this.addressService.setDefault(id); }
+  onDeleteAddress(id: string) { this.addressService.deleteAddress(id); }
+ 
+  openAddAddressModal() { this.isAddAddressModalOpen = true; }
+  closeAddAddressModal() { this.isAddAddressModalOpen = false; }
+ 
+  onAddAddress() {
+    this.addressService.addAddress(this.newAddress);
+    // Reset form
+    this.newAddress = { country: 'India', postalCode: '', addressLine1: '', addressLine2: '', state: '' };
+    this.closeAddAddressModal();
   }
 }

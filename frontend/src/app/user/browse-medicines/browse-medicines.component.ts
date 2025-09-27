@@ -110,7 +110,6 @@ export class BrowseMedicinesComponent implements OnInit {
     ).subscribe(response => {
       if (response) {
         console.log('Item added to cart successfully:', response);
-        alert(`${medicine.name} has been added to your cart!`);
         // Optionally, update a cart count in the UI
         // this.cartService.incrementCartCount();
       }

@@ -1,94 +1,222 @@
-/* --- Main Layout --- */
-.profile-grid {
-  display: grid;
-  grid-template-columns: 300px 1fr;
-  gap: 24px;
+/* General Page Styles */
+.page-container {
+  max-width: 1100px;
+  margin: 2rem auto;
+  padding: 0 2rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.left-column, .right-column {
+h1 {
+  margin: 0 0 0.5rem 0;
+  color: #1e293b;
+}
+
+.page-container>p {
+  margin: 0 0 2rem 0;
+  color: #64748b;
+}
+
+.card {
+  background-color: #fff;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 24px; /* Ensures space between columns */
+}
+
+.left-column,
+.right-column {
   display: flex;
   flex-direction: column;
   gap: 24px;
 }
 
+/* --- Profile Info Card (Left) --- */
+.profile-info {
+  padding: 24px;
+  text-align: center;
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  background-color: #dbeafe;
+  color: #3b82f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 500;
+}
+
+.profile-info h2 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.profile-info p {
+  margin: 4px 0 0 0;
+  color: #64748b;
+}
+
+/* --- Shared Card/Form Styles --- */
 .card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 16px;
   border-bottom: 1px solid #e2e8f0;
 }
-.card-header h3 {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin: 0;
-}
-.card-content {
-  padding: 24px;
-}
 
-/* --- Profile Card (Left) --- */
-.profile-card {
-  text-align: center;
-  padding: 32px 24px;
-}
-.profile-card h2 {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin: 0;
-}
-.profile-card p {
-  color: #64748b;
-  margin: 4px 0 0 0; /* Adjusted margin */
-}
-
-/* --- Danger Zone (Left) --- */
-.danger-zone .card-header { border-color: #fecaca; }
-.danger-zone h3 { color: #b91c1c; }
-.danger-zone .card-content { display: flex; flex-direction: column; gap: 12px; }
-.danger-btn {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #fca5a5;
-  background: #fff1f2;
-  color: #b91c1c;
-  border-radius: 6px;
-  font-weight: 500;
-  cursor: pointer;
-}
-.danger-btn.delete {
-  background-color: #b91c1c;
-  color: white;
-  border-color: #b91c1c;
-}
-
-/* --- Form Styles (Right) --- */
 .form {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
-.input-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+
+.card-content {
+  padding: 24px;
 }
+
+
 .input-group label {
   font-weight: 500;
+  margin-bottom: 8px;
 }
+
 .input-group input {
+  width: 100%;
   padding: 10px;
   border: 1px solid #cbd5e1;
   border-radius: 6px;
 }
-.input-group input:disabled {
-  background-color: #f1f5f9;
-  cursor: not-allowed;
-}
-.save-button {
-  align-self: flex-start;
+
+.submit-button {
   background-color: #3b82f6;
   color: white;
   border: none;
-  padding: 10px 20px;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* --- Delivery Addresses Card (Right) --- */
+.add-address-btn {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  padding: 8px 16px;
   border-radius: 6px;
   font-weight: 500;
   cursor: pointer;
+}
+
+.address-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.address-item:last-child {
+  border-bottom: none;
+}
+
+.default-badge {
+  background-color: #dcfce7;
+  color: #16a34a;
+  font-size: 0.75rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: 8px;
+}
+
+.address-details p {
+  margin: 4px 0 0 0;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.address-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.set-default-btn {
+  background: none;
+  border: 1px solid #e2e8f0;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #3b82f6;
+  font-weight: 500;
+}
+
+.delete-btn {
+  background: none;
+  border: 1px solid #fecaca;
+  color: #ef4444;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* --- Modal Styles --- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.modal-header h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  color: #9ca3af;
+  line-height: 1;
+  padding: 0;
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+.input-group input[type="password"]::placeholder {
+  color: #9ca3af;
 }

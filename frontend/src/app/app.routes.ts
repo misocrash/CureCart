@@ -18,6 +18,7 @@ import { AdminLayoutComponent } from './admin/admin-layout/admin-layout.componen
 import { MedicinesListComponent } from './admin/medicines-list/medicines-list.component';
 import { ManageMedicinesComponent } from './admin/manage-medicines/manage-medicines.component';
 import { AdminOrdersComponent } from './admin/admin-orders/admin-orders.component';
+import { DeliveryInfoComponent } from './user/delivery-info/delivery-info.component';
 
 export const routes: Routes = [
   { path: 'signin', component: SignInComponent },
@@ -28,6 +29,7 @@ export const routes: Routes = [
       { path: '', redirectTo: 'browse-medicines', pathMatch: 'full' },
       { path: 'browse-medicines', component: BrowseMedicinesComponent },
       { path: 'cart', component: CartComponent },
+      { path: 'delivery-info', component: DeliveryInfoComponent },
       { path: 'checkout', component: CheckoutComponent },
       { path: 'orders', component: OrderHistoryComponent },
       { path: 'my-profile', component: MyProfileComponent },
