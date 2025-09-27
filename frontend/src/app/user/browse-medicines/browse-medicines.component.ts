@@ -39,7 +39,6 @@ export class BrowseMedicinesComponent implements OnInit {
 
     this.http.get<any[]>(`${environment.endpoints.medicineBaseEndpoint}`, { headers: headers as { [header: string]: string | string[] } }).subscribe({
       next: (response) => {
-        // Transform the response to match the Medicine interface
         this.allMedicines = response.map(med => ({
           id: med.id.toString(),
           name: med.name,
@@ -47,7 +46,7 @@ export class BrowseMedicinesComponent implements OnInit {
           stock: med.stock,
           price: med.price,
           description: med.description || `${med.pack_size} by ${med.manufacture_name}`,
-          quantityInCart: 0, // Initialize with 0
+          quantityInCart: 0,
           cartItemId: null
         }));
         this.filteredMedicines = this.allMedicines;
@@ -77,7 +76,6 @@ export class BrowseMedicinesComponent implements OnInit {
             med.cartItemId = null;
           }
         });
-        // We need to re-apply filters in case the user was searching
         this.filterMedicines();
       }
     });
@@ -86,12 +84,10 @@ export class BrowseMedicinesComponent implements OnInit {
   filterMedicines() {
     let tempMeds = this.allMedicines;
 
-    // Filter by category
     if (this.selectedCategory !== 'All') {
       tempMeds = tempMeds.filter(med => med.category === this.selectedCategory);
     }
 
-    // Filter by search term
     if (this.searchTerm) {
       tempMeds = tempMeds.filter(med =>
         med.name.toLowerCase().includes(this.searchTerm.toLowerCase())
@@ -112,7 +108,7 @@ export class BrowseMedicinesComponent implements OnInit {
     const headers = authToken ? { 'Authorization': `Bearer ${authToken}` } : {};
     const payload = {
       medicineId: +medicine.id,
-      quantity: 1 // Always add one at a time
+      quantity: 1 // one at a time
     };
 
     const request = this.http.post<any>(`${environment.endpoints.userBaseEndpoint}/${userId}/cart/items`, payload, { headers: headers as { [header: string]: string | string[] } });
@@ -126,7 +122,7 @@ export class BrowseMedicinesComponent implements OnInit {
     ).subscribe(response => {
       if (response) {
         medicine.quantityInCart++;
-        if (response.cartItemId) { // Capture new cartItemId on first add
+        if (response.cartItemId) { 
           medicine.cartItemId = response.cartItemId;
         }
         console.log('Quantity increased:', response);

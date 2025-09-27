@@ -1,9 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './auth.guard';
-// Auth
 import { SignInComponent } from './auth/signin/signin.component';
 import { SignupComponent } from './auth/signup/signup.component';
-// User
 import { LayoutComponent } from './layout/layout.component';
 import { BrowseMedicinesComponent } from './user/browse-medicines/browse-medicines.component';
 import { CartComponent } from './user/cart/cart.component';
@@ -12,7 +10,6 @@ import { MyProfileComponent } from './user/my-profile/my-profile.component';
 import { FeedbackComponent } from './user/feedback/feedback.component';
 import { AboutUsComponent } from './user/about-us/about-us.component';
 import { ContactUsComponent } from './user/contact-us/contact-us.component';
-// Admin
 import { AdminLayoutComponent } from './admin/admin-layout/admin-layout.component';
 import { MedicinesListComponent } from './admin/medicines-list/medicines-list.component';
 import { ManageMedicinesComponent } from './admin/manage-medicines/manage-medicines.component';

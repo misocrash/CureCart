@@ -20,7 +20,7 @@ interface BackendAddress {
   default: boolean;
 }
 
-interface CartItem {
+interface CartItem { // even though we may not use all these fields, but we need to define them
   medicineName: string;
   quantity: number;
   subtotal: number;
@@ -48,7 +48,7 @@ export class DeliveryInfoComponent implements OnInit {
   toastMessage = '';
   toastType: 'success' | 'error' = 'success';
 
-  // This object now perfectly matches the expected type in the service
+  // default fields which will be filled
   newAddress = {
     country: 'India',
     addressLine1: '',
@@ -59,16 +59,12 @@ export class DeliveryInfoComponent implements OnInit {
   };
  
   constructor(
-    private addressService: AddressService,
     private router: Router,
     private http: HttpClient
   ) {}
  
   ngOnInit() {
     this.fetchAddresses();
-    // Mock cart data for summary, as cartService is removed
-    // In a real app, this would come from a shared state or API
-    this.cartItems = history.state.items || [];
     this.calculateSummary();
   }
 
@@ -83,7 +79,6 @@ export class DeliveryInfoComponent implements OnInit {
         return of([]);
       })
     ).subscribe(backendAddresses => {
-      // Map backend response to frontend Address model
       this.addresses = backendAddresses.map(addr => ({
         id: addr.addressId.toString(),
         country: addr.country,
@@ -139,9 +134,9 @@ export class DeliveryInfoComponent implements OnInit {
     ).subscribe(savedAddress => {
       if (savedAddress) {
         this.showSuccessToast('Address saved successfully!');
-        this.fetchAddresses(); // Refresh the list of addresses
-        this.view = 'select'; // Switch back to the selection view
-        // Automatically select the newly added address
+        this.fetchAddresses(); 
+        this.view = 'select';
+        // auto select the newly added address
         this.selectedAddressId = savedAddress.addressId.toString();
         // Reset form
         this.newAddress = { country: 'India', addressLine1: '', addressLine2: '', city: '', postalCode: '', state: '' };
@@ -183,13 +178,13 @@ export class DeliveryInfoComponent implements OnInit {
     this.toastMessage = message;
     this.toastType = 'success';
     this.showToast = true;
-    setTimeout(() => this.showToast = false, 2000); // Hide after 3 seconds
+    setTimeout(() => this.showToast = false, 2000); 
   }
 
   private showErrorToast(message: string) {
     this.toastMessage = message;
     this.toastType = 'error';
     this.showToast = true;
-    setTimeout(() => this.showToast = false, 2000); // Hide after 3 seconds
+    setTimeout(() => this.showToast = false, 2000); 
   }
 }

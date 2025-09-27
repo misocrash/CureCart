@@ -8,10 +8,9 @@ export const authGuard: CanActivateFn = (route, state) => {
   const expectedRole = route.data['expectedRole'] as 'admin' | 'user';
 
   if (authService.isAuthenticated() && authService.hasRole(expectedRole)) {
-    return true; // Access granted!
+    return true;
   }
 
-  // If not logged in or role doesn't match, send back to signin
   authService.logout();
   return false;
 };

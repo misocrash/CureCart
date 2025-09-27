@@ -46,7 +46,6 @@ export class OrderHistoryComponent implements OnInit {
   isLoading = true;
   error: string | null = null;
 
-  // You should get this from your authentication service
   private userId = localStorage.getItem('userId'); 
 
   constructor(private http: HttpClient) {}
@@ -67,7 +66,7 @@ export class OrderHistoryComponent implements OnInit {
           console.error('Error fetching orders:', err);
           this.error = 'Failed to load order history. Please try again later.';
           this.isLoading = false;
-          return of([]); // Return an empty array on error
+          return of([]);
         })
       )
       .subscribe(data => {

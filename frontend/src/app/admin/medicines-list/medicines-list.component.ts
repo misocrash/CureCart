@@ -34,11 +34,11 @@ export class MedicinesListComponent implements OnInit {
 
     this.http.get<any[]>(environment.endpoints.medicineBaseEndpoint, { headers: headers as { [header: string]: string | string[] } }).subscribe({
       next: (response) => {
-        // Transform the response to match the Medicine interface
+    
         this.allMedicines = response.map(med => ({
           id: med.id.toString(),
           name: med.name,
-          category: med.compositionText || 'Uncategorized', // Use compositionText as category
+          category: med.compositionText || 'Uncategorized',
           stock: med.stock,
           price: med.price,
           description: med.description || `${med.pack_size} by ${med.manufacture_name}`

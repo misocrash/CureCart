@@ -13,7 +13,6 @@ import { CartService } from '../services/cart.service';
 })
 export class SidebarComponent implements OnInit {
   cartItemCount = 0;
-  // Updated menu items to match the new design
   menuItems = [
     { label: 'Browse Medicines', icon: '💊', link: '/browse-medicines' },
     { label: 'Cart', icon: '🛍️', link: '/cart' },

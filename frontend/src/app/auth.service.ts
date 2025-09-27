@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 
 export type UserRole = 'admin' | 'user' | null;
 
-
 export interface User {
   id: number;
   name: string;
@@ -22,7 +21,7 @@ export class AuthService {
   private registerUrl = 'http://localhost:8099/api/users/register';
 
 
-  constructor(private http: HttpClient, private router: Router) { 
+  constructor(private http: HttpClient, private router: Router) {
 
     const storedRole = localStorage.getItem('userRole');
     if (storedRole) {
@@ -30,43 +29,41 @@ export class AuthService {
     }
   }
 
-login(email: string, password: string, role: 'admin' | 'user'): void {
-  const loginData = { email, password }; // Prepare the request payload
-  console.log(loginData);
+  login(email: string, password: string): void {
+    const loginData = { email, password };
+    console.log(loginData);
 
-  this.http.post<{ token: string, user: User}>(`${this.apiUrl}`, loginData).subscribe({
-    next: (response) => {
-      console.log('Login successful', response);
+    this.http.post<{ token: string, user: User }>(`${this.apiUrl}`, loginData).subscribe({ // http.post instantly returns Observable object, so instead of app being freezed
+      next: (response) => {                                                                // the app works (async). next is executed if successfull otherwise error
+        console.log('Login successful', response);
 
-      // Store the token in localStorage for subsequent API calls
-      localStorage.setItem('authToken', response.token);
-      localStorage.setItem('userId', response.user.id.toString());
-      localStorage.setItem('userName', response.user.name);
-      localStorage.setItem('userEmail', response.user.email);
 
-      // Check if the role exists and normalize it to lowercase
-      if (response.user && response.user.role) {
-        this.currentUserRole = response.user.role.toLowerCase() as UserRole;
-        console.log('User role:', this.currentUserRole);
-        localStorage.setItem('userRole', this.currentUserRole as string);
-        // Navigate based on the user's role
-        if (this.currentUserRole === 'admin') {
-          this.router.navigate(['/admin']);
-        } else if (this.currentUserRole === 'user') {
-          this.router.navigate(['/browse-medicines']);
+        localStorage.setItem('authToken', response.token);
+        localStorage.setItem('userId', response.user.id.toString());
+        localStorage.setItem('userName', response.user.name);
+        localStorage.setItem('userEmail', response.user.email);
+
+        if (response.user && response.user.role) {
+          this.currentUserRole = response.user.role.toLowerCase() as UserRole;
+          console.log('User role:', this.currentUserRole);
+          localStorage.setItem('userRole', this.currentUserRole as string);
+          if (this.currentUserRole === 'admin') {
+            this.router.navigate(['/admin']);
+          } else if (this.currentUserRole === 'user') {
+            this.router.navigate(['/browse-medicines']);
+          } else {
+            alert('Invalid role. Please contact support.');
+          }
         } else {
-          alert('Invalid role. Please contact support.');
+          alert('Role is missing in the response. Please contact support.');
         }
-      } else {
-        alert('Role is missing in the response. Please contact support.');
+      },
+      error: (error) => {
+        console.error('Login failed', error);
+        alert('Login failed. Please check your credentials and try again.');
       }
-    },
-    error: (error) => {
-      console.error('Login failed', error);
-      alert('Login failed. Please check your credentials and try again.');
-    }
-  });
-}
+    });
+  }
 
 
   logout(): void {

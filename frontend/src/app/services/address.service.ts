@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { environment } from '../../environments/environment.development';
  
-// The corrected Address interface
 export interface Address {
   id: string;
   country: string;
@@ -18,19 +17,9 @@ export interface Address {
   providedIn: 'root'
 })
 export class AddressService {
-  private addresses: Address[] = [
-    // Updated mock data to match the new interface
-    {
-      id: '1',
-      country: 'India',
-      postalCode: '400001',
-      addressLine1: '123 Marine Drive, Apt 4B',
-      state: 'Maharashtra',
-      isDefault: true
-    },
-  ];
+  private addresses: Address[] = [];
 
-    showToast = false;
+  showToast = false;
   toastMessage = '';
   toastType: 'success' | 'error' = 'success';
 
@@ -39,7 +28,7 @@ export class AddressService {
 
   constructor(private http: HttpClient) { }
  
-  // This method now expects the correct address type
+
   addAddress(address: Omit<Address, 'id' | 'isDefault'>) {
     const newAddress: Address = {
       ...address,

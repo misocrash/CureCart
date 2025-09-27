@@ -9,7 +9,7 @@ import { environment } from '../../../environments/environment.development';
 interface Medicine {
   id: string; 
   name: string; 
-  category: string; // This is compositionText
+  category: string;
   stock: number; 
   price: number; 
   description: string;
@@ -69,11 +69,11 @@ export class ManageMedicinesComponent implements OnInit {
 
     this.http.get<any[]>(environment.endpoints.medicineBaseEndpoint, { headers: headers as { [header: string]: string | string[] } }).subscribe({
       next: (response) => {
-        // Transform the response to match the Medicine interface
+        
         this.allMedicines = response.map(med => ({
           id: med.id.toString(),
           name: med.name,
-          category: med.compositionText || 'Uncategorized', // Use compositionText as category
+          category: med.compositionText || 'Uncategorized', 
           stock: med.stock,
           price: med.price,
           description: med.description || '',
@@ -97,14 +97,13 @@ export class ManageMedicinesComponent implements OnInit {
       stock: 0, 
       manufacture_name: '',
       pack_size: '',
-      category: '' // Corresponds to compositionText
+      category: '' 
     };
     this.isAddDialogOpen = true;
   }
 
   openEditDialog(medicine: Medicine) {
     this.editingMedicine = medicine;
-    // Only populate the fields needed for editing
     this.editFormData = {
       name: medicine.name,
       description: medicine.description,
@@ -173,7 +172,7 @@ export class ManageMedicinesComponent implements OnInit {
     ).subscribe(response => {
       if (response) {
         console.log('Medicine updated successfully', response);
-        this.fetchMedicines(); // Refresh the list
+        this.fetchMedicines(); 
       }
     });
     this.closeDialogs();

@@ -1,7 +1,7 @@
 HELP.md
-target/
+backend/target/
 
-.mvn/wrapper/maven-wrapper.jar
+backend/.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 

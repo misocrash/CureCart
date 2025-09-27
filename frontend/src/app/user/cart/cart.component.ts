@@ -23,6 +23,7 @@ export interface CartResponse {
   items: CartItem[];
   totalAmount: number;
 }
+
 @Component({
   selector: 'app-cart',
   standalone: true,
@@ -72,10 +73,8 @@ export class CartComponent implements OnInit {
     });
   }
 
-  // proceedToCheckout() {
-  //   this.router.navigate(['/checkout'], { state: { totalAmount: this.totalAmount, items: this.cartItems } });
-  // }
     proceedToCheckout() {
-    this.router.navigate(['/delivery-info'], {state: {totalAmount: this.totalAmount, itemsCount: this.cartItems.length}});
+    this.router.navigate(['/delivery-info'], {state: {totalAmount: this.totalAmount, itemsCount: this.cartItems.length}}); // instead of calling backend again and fetching these details, 
+                                                                                                                          // we store it in the above vars and pass it from here
   }
 }

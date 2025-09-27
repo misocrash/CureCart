@@ -57,7 +57,7 @@ export class MyProfileComponent implements OnInit {
   profile = {
     name: '',
     email: '',
-    password: '', // For the new password input
+    password: '',
     role: '',
   };
   isSaving = false;
@@ -144,14 +144,14 @@ export class MyProfileComponent implements OnInit {
       if (response) {
         console.log('Profile updated successfully', response);
 
-        // Update localStorage with the new data from the response
+        
         localStorage.setItem('userName', response.name);
         localStorage.setItem('userEmail', response.email);
 
-        // Update the component's profile data to reflect the change
+        
         this.profile.name = response.name;
         this.profile.email = response.email;
-        this.profile.password = ''; // Clear the password field
+        this.profile.password = ''; 
 
         this.showSuccessToast('Profile updated successfully!');
       }
@@ -162,11 +162,11 @@ export class MyProfileComponent implements OnInit {
   onSetDefault(id: string) { 
     this.addressService.onSetDefault(id).subscribe(() => {
       this.showSuccessToast('Default address updated.');
-      // Fetch addresses only after the default has been successfully set
+
       this.fetchAddresses();
     }); 
   }
-  // onDeleteAddress(id: string) { this.addressService.onDeleteAddress(id); }
+
 
   openAddAddressModal() { this.isAddAddressModalOpen = true; }
   closeAddAddressModal() { this.isAddAddressModalOpen = false; }
@@ -206,30 +206,6 @@ export class MyProfileComponent implements OnInit {
       }
     });
   }
-
-  // onSetDefault(addressId: string) {
-  //   const authToken = localStorage.getItem('authToken');
-  //   const headers = authToken ? { 'Authorization': `Bearer ${authToken}` } : {};
-  //   const setDefaultUrl = `${this.addressApiUrl}/${addressId}/default`;
-
-  //   this.http.put(setDefaultUrl, {}, { headers }).subscribe(() => {
-  //     this.showSuccessToast('Default address updated.');
-  //     this.fetchAddresses();
-  //   });
-  // }
-
-  // onDeleteAddress(addressId: string) {
-  //   if (confirm('Are you sure you want to delete this address?')) {
-  //     const authToken = localStorage.getItem('authToken');
-  //     const headers = authToken ? { 'Authorization': `Bearer ${authToken}` } : {};
-  //     const deleteUrl = `${this.addressApiUrl}/${addressId}`;
-
-  //     this.http.delete(deleteUrl, { headers }).subscribe(() => {
-  //       this.showSuccessToast('Address deleted.');
-  //       this.fetchAddresses();
-  //     });
-  //   }
-  // }
 
   private showSuccessToast(message: string) {
     this.toastMessage = message;

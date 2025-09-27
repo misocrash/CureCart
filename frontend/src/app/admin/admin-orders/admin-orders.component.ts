@@ -66,7 +66,7 @@ export class AdminOrdersComponent implements OnInit {
       })
     ).subscribe(orders => {
       console.log(orders);
-      this.allOrders = orders.map(o => ({ ...o, customerName: `User #${o.userId}` })); // Add customer name placeholder
+      this.allOrders = orders.map(o => ({ ...o})); 
       this.filterOrders();
     });
   }
@@ -76,7 +76,6 @@ export class AdminOrdersComponent implements OnInit {
     this.processedOrders = this.allOrders.filter(o => o.status !== 'PENDING');
   }
 
-  // --- Order Actions ---
   shipOrder(orderToShip: Order) {
     this.updateOrderStatus(orderToShip.orderId, 'SHIPPED');
   }
@@ -90,10 +89,10 @@ export class AdminOrdersComponent implements OnInit {
     const headers = authToken ? { 'Authorization': `Bearer ${authToken}` } : {};
     const updateUrl = `${environment.endpoints.userBaseEndpoint}/${localStorage.getItem('userId')}/orders/${orderId}/status`;
 
-    // The backend expects 'status' as a request parameter, not in the body.
+    // backend expects 'status' as a request parameter, not in the body.
     const params = new HttpParams().set('status', newStatus);
 
-    // We send an empty body `{}` because the data is in the URL parameter.
+    // send an empty body `{}` because the data is in the URL parameter.
     this.http.put(updateUrl, {}, { headers: headers as { [header: string]: string | string[] }, params }).pipe(
       catchError(err => {
         console.error(`Failed to update order ${orderId} to ${newStatus}`, err);
@@ -107,13 +106,12 @@ export class AdminOrdersComponent implements OnInit {
         const order = this.allOrders.find(o => o.orderId === orderId);
         if (order) {
           order.status = newStatus;
-          this.filterOrders(); // Re-filter the lists to move the order
+          this.filterOrders();
         }
       }
     });
   }
 
-  // --- Modal Logic ---
   viewOrder(order: Order) {
     this.selectedOrder = order;
     this.isModalOpen = true;
@@ -124,7 +122,6 @@ export class AdminOrdersComponent implements OnInit {
     this.selectedOrder = null;
   }
 
-  // --- Stat Getters ---
   get pendingOrdersCount(): number {
     return this.allOrders.filter(o => o.status === 'PENDING').length;
   }

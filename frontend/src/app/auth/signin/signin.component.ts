@@ -12,13 +12,12 @@ import { AuthService } from '../../auth.service';
   styleUrls: ['./signin.component.css']
 })
 export class SignInComponent {
-  email: string = '';
+  email: string = ''; // any change here, updates in the ngModel field in the component and vice versa
   password: string = '';
-  selectedRole: 'admin' | 'user' = 'user';
 
   constructor(private authService: AuthService) {}
 
   onSubmit() {
-    this.authService.login(this.email, this.password, this.selectedRole);
+    this.authService.login(this.email, this.password);
   }
 }
