@@ -13,7 +13,7 @@
         <label for="password">Password</label>
         <input id="password" [(ngModel)]="password" name="password" type="password" placeholder="Enter your password" required>
       </div>
-      <div class="role-selector">
+      <!-- <div class="role-selector">
         <button type="button" (click)="selectedRole = 'user'" [class.selected]="selectedRole === 'user'">
           <div class="role-title">User</div>
           <div class="role-desc">Browse & Order</div>
@@ -22,7 +22,7 @@
           <div class="role-title">Admin</div>
           <div class="role-desc">Manage Inventory</div>
         </button>
-      </div>
+      </div> -->
       <div *ngIf="!selectedRole" class="error-message">
         <p>Please select a role before signing in.</p>
       </div>

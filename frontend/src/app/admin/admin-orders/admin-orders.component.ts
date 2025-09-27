@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 
@@ -49,7 +49,9 @@ export class AdminOrdersComponent implements OnInit {
   selectedOrder: Order | null = null;
 
 
-  private ordersApiUrl = 'http://localhost:8099/api/users/2/orders/admin';
+  // Admin should use a general endpoint for all orders
+  private ordersApiUrl = 'http://localhost:8099/api/users/5/orders';
+  private updateOrderStatusApiUrl = `http://localhost:8099/api/users/${localStorage.getItem('userId')}/orders`; // e.g., /api/orders/{orderId}/status
 
   constructor(private http: HttpClient) { }
 
@@ -90,12 +92,13 @@ export class AdminOrdersComponent implements OnInit {
   updateOrderStatus(orderId: number, newStatus: OrderStatus) {
     const authToken = localStorage.getItem('authToken');
     const headers = authToken ? { 'Authorization': `Bearer ${authToken}` } : {};
-    const updateUrl = `${this.ordersApiUrl}/${orderId}/status`;
+    const updateUrl = `${this.updateOrderStatusApiUrl}/${orderId}/status`;
 
-    // The body should match what the backend expects, e.g., { "status": "SHIPPED" }
-    const payload = { status: newStatus };
+    // The backend expects 'status' as a request parameter, not in the body.
+    const params = new HttpParams().set('status', newStatus);
 
-    this.http.put(updateUrl, payload, { headers: headers as { [header: string]: string | string[] } }).pipe(
+    // We send an empty body `{}` because the data is in the URL parameter.
+    this.http.put(updateUrl, {}, { headers: headers as { [header: string]: string | string[] }, params }).pipe(
       catchError(err => {
         console.error(`Failed to update order ${orderId} to ${newStatus}`, err);
         alert(`Error updating order status. Please try again.`);
