@@ -70,6 +70,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/api/medicines/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/medicines/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/users/*/orders/*/status").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/admin/*").hasRole("ADMIN")
                         // Rule for updating order status
 
                         // General authenticated endpoints
