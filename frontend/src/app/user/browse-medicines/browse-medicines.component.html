@@ -22,7 +22,14 @@
         <p class="medicine-description">{{ medicine.description }}</p>
         <div class="card-footer">
           <p class="medicine-price">₹ {{ medicine.price.toFixed(2) }}</p>
-          <button (click)="addToCart(medicine)" class="add-to-cart-button">Add to Cart</button>
+          <div *ngIf="medicine.quantityInCart === 0; else quantityStepper" class="add-to-cart-container">
+            <button (click)="increaseQuantity(medicine)" class="add-to-cart-button">Add to Cart</button>
+          </div>
+          <ng-template #quantityStepper>
+            <div class="quantity-stepper">
+              <button (click)="decreaseQuantity(medicine)" class="stepper-btn minus">-</button><span class="quantity-display">{{ medicine.quantityInCart }}</span><button (click)="increaseQuantity(medicine)" class="stepper-btn plus">+</button>
+            </div>
+          </ng-template>
         </div>
       </div>
     </div>
