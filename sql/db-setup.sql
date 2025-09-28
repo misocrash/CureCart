@@ -111,7 +111,7 @@ INSERT INTO carts (cart_id, created_at, updated_at, user_id) VALUES
 
 -- Insert data into medicines
 INSERT INTO medicines (id, composition_text, description, manufacture_name, name, pack_size, price, stock) VALUES
-(101, 'Paracetamol 500mg Tab', 'Paracetamol 500mg', 'Common pain relief and fever reducer.', 'MedCorp Pharmaceuticals', '10 Tablets', 5.50, 500),
+(101, 'Paracetamol 500mg', 'Common pain relief and fever reducer.', 'MedCorp Pharmaceuticals', 'Paracetamol 500mg Tab', '10 Tablets', 5.50, 500),
 (102,'Amoxicillin 250mg','Antibiotic for bacterial infections.','GenMed Labs','Amoxicillin 250mg Cap','15 Capsules',12.00,25),
 (103,'Atorvastatin 20mg','Used to lower cholesterol.','HeartCare Inc.','Atorvastatin 20mg','30 Tablets',95.00,150),
 (104,'Ibuprofen 400mg','Anti-inflammatory.','ReliefFast Co.','Ibuprofen 400mg Gel','20 Capsules',8.75,0),
