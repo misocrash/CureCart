@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS cart_items (
   cart_id BIGINT NOT NULL,
   medicine_id BIGINT NOT NULL,
   FOREIGN KEY (cart_id) REFERENCES carts(cart_id),
-  FOREIGN KEY (medicine_id) REFERENCES medicines(id)
+  FOREIGN KEY (medicine_id) REFERENCES medicines(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS orders (
@@ -77,7 +77,7 @@ CREATE TABLE IF NOT EXISTS order_items (
   quantity INT NOT NULL,
   medicine_id BIGINT NOT NULL,
   order_id BIGINT NOT NULL,
-  FOREIGN KEY (medicine_id) REFERENCES medicines(id),
+  FOREIGN KEY (medicine_id) REFERENCES medicines(id) ON DELETE CASCADE, -- if med is deleted, delete that row from order-items also
   FOREIGN KEY (order_id) REFERENCES orders(order_id)
 );
 
@@ -171,6 +171,5 @@ INSERT INTO order_items (order_item_id, quantity, medicine_id, order_id) VALUES
 (5013,3,104,1009),
 (5014,2,105,1010),
 (5015,1,106,1010);
-
 
 
