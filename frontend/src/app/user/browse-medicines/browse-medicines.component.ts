@@ -126,11 +126,13 @@ export class BrowseMedicinesComponent implements OnInit {
           medicine.cartItemId = response.cartItemId;
         }
         console.log('Quantity increased:', response);
+        this.fetchMedicines();
       }
     });
   }
 
   decreaseQuantity(medicine: Medicine) {
+    console.log(medicine.quantityInCart);
     if (medicine.quantityInCart <= 0) return;
 
     const userId = localStorage.getItem('userId');
@@ -147,16 +149,18 @@ export class BrowseMedicinesComponent implements OnInit {
     const request = this.http.put<any>(`${environment.endpoints.userBaseEndpoint}/${userId}/cart/items/${medicine.cartItemId}`, {}, { headers: headers as { [header: string]: string | string[] }, params });
     request.pipe(
       catchError(err => {
-        console.error('Error decreasing quantity:', err);
+        console.log('Error decreasing quantity:', err);
         alert(`Failed to update cart for ${medicine.name}.`);
         return of(null);
       })
     ).subscribe(response => {
+      console.log(response);
       medicine.quantityInCart--;
       if (medicine.quantityInCart === 0) {
         medicine.cartItemId = null;
       }
       console.log('Quantity decreased');
+      this.fetchMedicines();
     });
   }
 }
