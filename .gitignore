@@ -1,6 +1,8 @@
 HELP.md
 backend/target/
 
+
+
 backend/.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
@@ -32,3 +34,15 @@ build/
 
 ### VS Code ###
 .vscode/
+
+## Terraform
+deployment/tf/.terraform/
+deployment/tf/terraform.tfstate
+deployment/tf/terraform.tfstate.backup
+
+terraform.tfstate
+
+# AWS
+aws/
+
+
