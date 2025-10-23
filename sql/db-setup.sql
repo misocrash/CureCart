@@ -6,9 +6,9 @@
 -- USER2: jane.smith@meds.com / UserPass123!
 -- For rest of the users, try UserPass123!
 
-create database meds2;
+--create database meds2;
 -- drop database meds2;
-use meds2;
+use curecartdb;
 
 CREATE TABLE IF NOT EXISTS users (
   id INT PRIMARY KEY AUTO_INCREMENT,
