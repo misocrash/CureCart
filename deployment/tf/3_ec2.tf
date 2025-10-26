@@ -70,9 +70,11 @@ resource "aws_instance" "springboot_server" {
 
   user_data = <<-EOF
     #!/bin/bash
-    sudo su
-    sudo yum update -y
-    sudo yum install -y java-17-amazon-corretto aws-cli
+    sudo dnf update -y
+    sudo dnf install -y java-17-amazon-corretto
+    sudo cd /home
+    sudo wget https://curecart-db.s3.us-east-1.amazonaws.com/Meds-0.0.1-SNAPSHOT.jar
+    sudo java -jar Meds-0.0.1-SNAPSHOT.jar --spring.datasource.url=jdbc:mysql://${aws_db_instance.curecart_rds.endpoint}:3306/${var.rds_db_name} --spring.datasource.username=${var.rds_username} --spring.datasource.password=${var.rds_password} &
     EOF
 
   tags = {

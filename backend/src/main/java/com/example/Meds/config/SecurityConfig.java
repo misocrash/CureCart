@@ -84,7 +84,7 @@ public class SecurityConfig {
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(Arrays.asList("http://localhost:4200")); // Allow Angular app
+        config.setAllowedOrigins(Arrays.asList("http://curecart-angular-frontend.s3-website-us-east-1.amazonaws.com")); // Allow Angular app
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Allow HTTP methods
         config.setAllowedHeaders(Arrays.asList("*")); // Allow all headers
         config.setAllowCredentials(true); // Allow credentials (e.g., cookies, authorization headers)
@@ -95,7 +95,7 @@ public class SecurityConfig {
     private UrlBasedCorsConfigurationSource corsConfigurationSource() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(Arrays.asList("http://localhost:4200")); // Allow Angular app
+        config.setAllowedOrigins(Arrays.asList("http://curecart-angular-frontend.s3-website-us-east-1.amazonaws.com")); // Allow Angular app
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Allow HTTP methods
         config.setAllowedHeaders(Arrays.asList("*")); // Allow all headers
         config.setAllowCredentials(true); // Allow credentials (e.g., cookies, authorization headers)

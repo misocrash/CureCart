@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { environment } from '../environments/environment.development';
 
 export type UserRole = 'admin' | 'user' | null;
 
@@ -17,8 +18,8 @@ export interface User {
 })
 export class AuthService {
   private currentUserRole: UserRole = null;
-  private apiUrl = 'http://localhost:8099/api/auth/login';
-  private registerUrl = 'http://localhost:8099/api/users/register';
+  private apiUrl = `${environment.endpoints.host}/api/auth/login`;
+  private registerUrl = `${environment.endpoints.host}/api/users/register`;
 
 
   constructor(private http: HttpClient, private router: Router) {

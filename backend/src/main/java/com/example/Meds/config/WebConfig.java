@@ -13,7 +13,7 @@ public class WebConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**") // Allow all endpoints
-                        .allowedOrigins("*") // Allow Angular app
+                        .allowedOrigins("http://curecart-angular-frontend.s3-website-us-east-1.amazonaws.com") // Allow Angular app
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Allow specific HTTP methods
                         .allowedHeaders("*") // Allow all headers
                         .allowCredentials(true); // Allow cookies if needed
