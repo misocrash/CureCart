@@ -59,23 +59,40 @@ resource "aws_instance" "springboot_server" {
   vpc_security_group_ids      = [aws_security_group.ec2_sg.id]
   iam_instance_profile        = aws_iam_instance_profile.ssm_profile.name
   
-  # user_data = <<-EOF
-  #   #!/bin/bash
-  #   sudo yum update -y
-  #   sudo yum install httpd -y
-  #   sudo systemctl start httpd
-  #   sudo systemctl enable httpd
-  #   echo "<h1>Backend Server Running in Private Subnet!</h1>" | sudo tee /var/www/html/index.html
-  # EOF
 
   user_data = <<-EOF
-    #!/bin/bash
-    sudo dnf update -y
-    sudo dnf install -y java-17-amazon-corretto
-    sudo cd /home
-    sudo wget https://curecart-db.s3.us-east-1.amazonaws.com/Meds-0.0.1-SNAPSHOT.jar
-    sudo java -jar Meds-0.0.1-SNAPSHOT.jar --spring.datasource.url=jdbc:mysql://${aws_db_instance.curecart_rds.endpoint}:3306/${var.rds_db_name} --spring.datasource.username=${var.rds_username} --spring.datasource.password=${var.rds_password} &
+      #!/bin/bash
+
+      # Update system and install Java
+      dnf update -y
+      dnf install -y java-17-amazon-corretto
+
+      # Download Spring Boot JAR
+      cd /home
+      wget https://curecart-db.s3.us-east-1.amazonaws.com/Meds-0.0.1-SNAPSHOT.jar
+
+      # Create systemd service
+      cat <<EOT > /etc/systemd/system/meds.service
+      [Unit]
+      Description=Meds Spring Boot App
+      After=network.target
+
+      [Service]
+      User=root
+      ExecStart=/usr/bin/java -jar /home/Meds-0.0.1-SNAPSHOT.jar --spring.datasource.url=jdbc:mysql://${aws_db_instance.curecart_rds.endpoint}:3306/${var.rds_db_name} --spring.datasource.username=${var.rds_username} --spring.datasource.password=${var.rds_password}
+      Restart=always
+
+      [Install]
+      WantedBy=multi-user.target
+      EOT
+
+      # Enable and start the service
+      systemctl daemon-reexec
+      systemctl daemon-reload
+      systemctl enable meds
+      systemctl start meds
     EOF
+
 
   tags = {
     Name = "springboot-server"
