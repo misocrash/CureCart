@@ -93,7 +93,7 @@ resource "aws_instance" "rds_client_instance" {
     sudo dnf install -y mysql-community-server
     sudo cd /home
     sudo wget https://curecart-db.s3.us-east-1.amazonaws.com/db-setup.sql
-    sudo mysql -h ${aws_db_instance.curecart_rds.endpoint} -P ${aws_db_instance.curecart_rds.port} -u ${var.rds_username} -p${var.rds_password} ${var.rds_db_name} < db-setup.sql
+    sudo mysql -h ${aws_db_instance.curecart_rds.endpoint} -P ${aws_db_instance.curecart_rds.port} -u ${var.rds_username} -p${var.rds_password} ${var.rds_db_name} < /db-setup.sql
     EOF
 
   tags = { Name = "curecart-EC2-RDS-Client" }

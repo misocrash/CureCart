@@ -79,7 +79,7 @@ resource "aws_instance" "springboot_server" {
 
       [Service]
       User=root
-      ExecStart=/usr/bin/java -jar /home/Meds-0.0.1-SNAPSHOT.jar --spring.datasource.url=jdbc:mysql://${aws_db_instance.curecart_rds.endpoint}:3306/${var.rds_db_name} --spring.datasource.username=${var.rds_username} --spring.datasource.password=${var.rds_password}
+      ExecStart=/usr/bin/java -jar /Meds-0.0.1-SNAPSHOT.jar --spring.datasource.url=jdbc:mysql://${aws_db_instance.curecart_rds.endpoint}:3306/${var.rds_db_name} --spring.datasource.username=${var.rds_username} --spring.datasource.password=${var.rds_password}
       Restart=always
 
       [Install]
