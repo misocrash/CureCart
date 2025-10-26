@@ -64,12 +64,12 @@ resource "aws_instance" "springboot_server" {
       #!/bin/bash
 
       # Update system and install Java
-      dnf update -y
-      dnf install -y java-17-amazon-corretto
+      sudo dnf update -y
+      sudo dnf install -y java-17-amazon-corretto
 
       # Download Spring Boot JAR
       cd /home
-      wget https://curecart-db.s3.us-east-1.amazonaws.com/Meds-0.0.1-SNAPSHOT.jar
+      sudo wget https://curecart-db.s3.us-east-1.amazonaws.com/Meds-0.0.1-SNAPSHOT.jar
 
       # Create systemd service
       cat <<EOT > /etc/systemd/system/meds.service
@@ -79,7 +79,7 @@ resource "aws_instance" "springboot_server" {
 
       [Service]
       User=root
-      ExecStart=/usr/bin/java -jar /Meds-0.0.1-SNAPSHOT.jar --spring.datasource.url=jdbc:mysql://${aws_db_instance.curecart_rds.endpoint}:3306/${var.rds_db_name} --spring.datasource.username=${var.rds_username} --spring.datasource.password=${var.rds_password}
+      ExecStart=/usr/bin/java -jar /home/Meds-0.0.1-SNAPSHOT.jar --spring.datasource.url=jdbc:mysql://${aws_db_instance.curecart_rds.endpoint}:3306/${var.rds_db_name} --spring.datasource.username=${var.rds_username} --spring.datasource.password=${var.rds_password}
       Restart=always
 
       [Install]

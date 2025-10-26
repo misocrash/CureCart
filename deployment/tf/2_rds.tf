@@ -91,9 +91,18 @@ resource "aws_instance" "rds_client_instance" {
     sudo dnf install -y https://dev.mysql.com/get/mysql84-community-release-el9-1.noarch.rpm
     sudo rpm --import https://repo.mysql.com/RPM-GPG-KEY-mysql
     sudo dnf install -y mysql-community-server
-    sudo cd /home
+    cd /home
     sudo wget https://curecart-db.s3.us-east-1.amazonaws.com/db-setup.sql
-    sudo mysql -h ${aws_db_instance.curecart_rds.endpoint} -P ${aws_db_instance.curecart_rds.port} -u ${var.rds_username} -p${var.rds_password} ${var.rds_db_name} < /db-setup.sql
+
+    while [ ! -f /home/db-setup.sql ]; do sleep 1; done
+
+    # Wait for RDS to be ready
+    until mysqladmin ping -h ${aws_db_instance.curecart_rds.endpoint} -P ${aws_db_instance.curecart_rds.port} -u ${var.rds_username} -p${var.rds_password} --silent; do
+      echo "Waiting for RDS to be ready..."
+      sleep 10
+    done
+    
+    sudo mysql -h ${aws_db_instance.curecart_rds.endpoint} -P ${aws_db_instance.curecart_rds.port} -u ${var.rds_username} -p${var.rds_password} ${var.rds_db_name} < /home/db-setup.sql
     EOF
 
   tags = { Name = "curecart-EC2-RDS-Client" }
