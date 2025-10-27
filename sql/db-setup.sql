@@ -6,7 +6,7 @@
 -- USER2: jane.smith@meds.com / UserPass123!
 -- For rest of the users, try UserPass123!
 
--- create database meds2;
+--  create database meds2;
 -- drop database meds2;
 use curecartdb;
 
