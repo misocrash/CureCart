@@ -8,7 +8,7 @@ variable "rds_password" {
   description = "Master password for RDS"
   type        = string
   sensitive   = true
-  default = "adminpassword"
+  default     = "adminpassword"
 }
 
 variable "rds_db_name" {
@@ -62,7 +62,7 @@ resource "aws_security_group_rule" "rds_ingress_from_client" {
   to_port                  = 3306
   protocol                 = "tcp"
   security_group_id        = aws_security_group.rds.id
-  source_security_group_id = aws_security_group.rds_client.id 
+  source_security_group_id = aws_security_group.rds_client.id
   description              = "Allow MySQL access from RDS Client"
 }
 
@@ -72,14 +72,14 @@ resource "aws_security_group_rule" "rds_client_egress_to_rds" {
   to_port                  = 3306
   protocol                 = "tcp"
   security_group_id        = aws_security_group.rds_client.id # Client SG ID
-  source_security_group_id = aws_security_group.rds.id       # References the RDS SG ID
+  source_security_group_id = aws_security_group.rds.id        # References the RDS SG ID
   description              = "Allow outbound MySQL access to RDS"
 }
 
 resource "aws_instance" "rds_client_instance" {
-  ami           = "ami-0341d95f75f311023"
-  instance_type = "t3.micro"
-  subnet_id     = aws_subnet.curecart_private_subnet[0].id
+  ami                    = "ami-0341d95f75f311023"
+  instance_type          = "t3.micro"
+  subnet_id              = aws_subnet.curecart_private_subnet[0].id
   vpc_security_group_ids = [aws_security_group.rds_client.id]
 
   iam_instance_profile = aws_iam_instance_profile.ssm_profile.name
@@ -149,6 +149,6 @@ output "rds_username" {
 }
 
 output "rds_password" {
-  value = var.rds_password
+  value     = var.rds_password
   sensitive = true
 }

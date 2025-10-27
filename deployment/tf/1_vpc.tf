@@ -75,7 +75,7 @@ resource "aws_eip" "nat_gateway_eip" {
 # public submet
 resource "aws_nat_gateway" "ngw" {
   allocation_id = aws_eip.nat_gateway_eip.id
-  subnet_id     = aws_subnet.curecart_public_subnet[0].id 
+  subnet_id     = aws_subnet.curecart_public_subnet[0].id
   depends_on    = [aws_internet_gateway.curecart_igw]
   tags = {
     Name = "curecart-NGW"
@@ -146,7 +146,7 @@ resource "aws_lb" "alb" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.alb.id]
-  subnets            = [for subnet in aws_subnet.curecart_public_subnet: subnet.id]
+  subnets            = [for subnet in aws_subnet.curecart_public_subnet : subnet.id]
   tags = {
     Name = "curecart-ALB"
   }

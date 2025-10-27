@@ -35,9 +35,9 @@ resource "aws_security_group" "ec2_sg" {
   vpc_id = aws_vpc.curecart_vpc.id
 
   ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
+    from_port       = 80
+    to_port         = 80
+    protocol        = "tcp"
     security_groups = [aws_security_group.alb.id]
     # cidr_blocks = ["0.0.0.0/0"]
   }
@@ -53,12 +53,12 @@ resource "aws_security_group" "ec2_sg" {
 }
 
 resource "aws_instance" "springboot_server" {
-  ami                         = "ami-0341d95f75f311023"
-  instance_type               = "t3.micro"
-  subnet_id                   = aws_subnet.curecart_private_subnet[0].id
-  vpc_security_group_ids      = [aws_security_group.ec2_sg.id]
-  iam_instance_profile        = aws_iam_instance_profile.ssm_profile.name
-  
+  ami                    = "ami-0341d95f75f311023"
+  instance_type          = "t3.micro"
+  subnet_id              = aws_subnet.curecart_private_subnet[0].id
+  vpc_security_group_ids = [aws_security_group.ec2_sg.id]
+  iam_instance_profile   = aws_iam_instance_profile.ssm_profile.name
+
 
   user_data = <<-EOF
       #!/bin/bash
