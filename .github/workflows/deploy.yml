@@ -19,22 +19,28 @@ jobs:
 
       - name: Terraform Format
         run: terraform fmt -check -recursive
+        working-directory: deployment/tf
 
       - name: Terraform Init
         run: terraform init
+        working-directory: deployment/tf
 
       - name: Terraform Validate
         run: terraform validate
+        working-directory: deployment/tf
 
       - name: Terraform Plan
         run: terraform plan -out=tfplan
+        working-directory: deployment/tf
 
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: us-east-1 
+          AWS_DEFAULT_REGION: us-east-1
+        working-directory: deployment/tf 
 
       - name: Show Terraform outputs
         run: terraform output
+        working-directory: deployment/tf
