@@ -8,4 +8,4 @@ sudo yum install mysql-community-server
 sudo yum install java-17-amazon-corretto -y
 sudo java -jar Meds-0.0.1-SNAPSHOT.jar --server.port=80 --spring.datasource.url=jdbc:mysql://mydb.cad646k2uj4t.us-east-1.rds.amazonaws.com:3306/curecartdb   --spring.datasource.username=admin   --spring.datasource.password=adminpassword
 
-mysql -h mydb.cad646k2uj4t.us-east-1.rds.amazonaws.com -P 3306 -u admin -p'adminpassword' curecartdb  < /tmp/db-setup.sql
+mysql -h mydb.cad646k2uj4t.us-east-1.rds.amazonaws.com -P 3306 -u admin -p'adminpassword' curecartdb  < db-setup.sql
