@@ -2,6 +2,8 @@ package com.example.Meds.config;
 
 import com.example.Meds.security.JwtRequestFilter;
 import com.example.Meds.service.MyUserDetailsService;
+// Import this to get HttpServletResponse
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -71,11 +73,22 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/api/medicines/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/users/*/orders/*/status").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/admin/*").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/users/{id}").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/users/{id}").authenticated()
                         // Rule for updating order status
 
                         // General authenticated endpoints
                         .anyRequest().authenticated()
+                )
+                // --- THIS IS THE UPDATED BLOCK ---
+                // This forces a 401 response for authentication errors (e.g., no token)
+                // instead of the default 403.
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint((request, response, authException) ->
+                                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.getMessage())
+                        )
                 );
+        // --- END OF UPDATE ---
 
         return http.build();
     }

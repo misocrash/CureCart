@@ -37,12 +37,12 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    // 4. Return UserResponseDTO
     public ResponseEntity<UserResponseDTO> getUser(@PathVariable Integer id) {
+        // This will either return the user or throw ResourceNotFoundException
         User user = userService.findById(id);
-        if (user == null) {
-            return ResponseEntity.notFound().build();
-        }
+
+        // If findById succeeds, we map and return 200 OK.
+        // If it throws, the GlobalExceptionHandler will now catch it and return 404.
         return ResponseEntity.ok(userMapper.toUserResponseDTO(user));
     }
 
