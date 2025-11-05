@@ -87,6 +87,10 @@ public class SecurityConfig {
                         .authenticationEntryPoint((request, response, authException) ->
                                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.getMessage())
                         )
+                        // This handles 403 (Authorization Failed)
+                        .accessDeniedHandler((request, response, accessDeniedException) ->
+                                response.sendError(HttpServletResponse.SC_FORBIDDEN, "Access Denied")
+                        )
                 );
         // --- END OF UPDATE ---
 

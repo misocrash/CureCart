@@ -49,18 +49,18 @@ public class AuthSteps {
         context.set(APITestContext.ContextKeys.REQUEST, request);
     }
 
-    @When("I send a POST request to {string}")
-    public void iSendAPOSTRequestTo(String endpoint) {
-        RequestSpecification request = context.getRequest();
-        Response response = request.when().post(endpoint);
-        context.set(APITestContext.ContextKeys.RESPONSE, response);
-    }
+//    @When("I send a POST request to {string}")
+//    public void iSendAPOSTRequestTo(String endpoint) {
+//        RequestSpecification request = context.getRequest();
+//        Response response = request.when().post(endpoint);
+//        context.set(APITestContext.ContextKeys.RESPONSE, response);
+//    }
 
-    @Then("I should receive a {int} status code")
-    public void iShouldReceiveAStatusCode(int statusCode) {
-        Response response = context.getResponse();
-        Assert.assertEquals(response.getStatusCode(), statusCode);
-    }
+//    @Then("I should receive a {int} status code")
+//    public void iShouldReceiveAStatusCode(int statusCode) {
+//        Response response = context.getResponse();
+//        Assert.assertEquals(response.getStatusCode(), statusCode);
+//    }
 
     @And("the response body should contain the user's details")
     public void theResponseBodyShouldContainTheUserSDetails() {

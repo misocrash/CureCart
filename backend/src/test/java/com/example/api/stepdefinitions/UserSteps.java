@@ -66,19 +66,19 @@ public class UserSteps {
         context.set(APITestContext.ContextKeys.USER_EMAIL, email);
     }
 
-
-    @When("I send a GET request to {string}")
-    public void iSendAGETRequestTo(String endpoint) {
-        String token = context.get(APITestContext.ContextKeys.AUTH_TOKEN);
-        Integer userId = context.get(APITestContext.ContextKeys.USER_ID);
-
-        RequestSpecification request = given()
-                .spec(SpecBuilder.getRequestSpec(token)) // Use the spec with the auth token
-                .pathParam("USER_ID", userId); // Set the path parameter
-
-        Response response = request.when().get(endpoint);
-        context.set(APITestContext.ContextKeys.RESPONSE, response);
-    }
+//
+//    @When("I send a GET request to {string}")
+//    public void iSendAGETRequestTo(String endpoint) {
+//        String token = context.get(APITestContext.ContextKeys.AUTH_TOKEN);
+//        Integer userId = context.get(APITestContext.ContextKeys.USER_ID);
+//
+//        RequestSpecification request = given()
+//                .spec(SpecBuilder.getRequestSpec(token)) // Use the spec with the auth token
+//                .pathParam("USER_ID", userId); // Set the path parameter
+//
+//        Response response = request.when().get(endpoint);
+//        context.set(APITestContext.ContextKeys.RESPONSE, response);
+//    }
 
     @And("the response body should contain my user details")
     public void theResponseBodyShouldContainMyUserDetails() {
@@ -118,18 +118,18 @@ public class UserSteps {
         context.set(APITestContext.ContextKeys.REQUEST, request);
     }
 
-    @When("I send a PUT request to {string}")
-    public void iSendAPUTRequestTo(String endpoint) {
-        RequestSpecification request = context.getRequest();
-        Integer userId = context.get(APITestContext.ContextKeys.USER_ID);
-
-        Response response = request
-                .pathParam("USER_ID", userId)
-                .when()
-                .put(endpoint);
-
-        context.set(APITestContext.ContextKeys.RESPONSE, response);
-    }
+//    @When("I send a PUT request to {string}")
+//    public void iSendAPUTRequestTo(String endpoint) {
+//        RequestSpecification request = context.getRequest();
+//        Integer userId = context.get(APITestContext.ContextKeys.USER_ID);
+//
+//        Response response = request
+//                .pathParam("USER_ID", userId)
+//                .when()
+//                .put(endpoint);
+//
+//        context.set(APITestContext.ContextKeys.RESPONSE, response);
+//    }
 
     @And("the response body should contain the updated name")
     public void theResponseBodyShouldContainTheUpdatedName() {
