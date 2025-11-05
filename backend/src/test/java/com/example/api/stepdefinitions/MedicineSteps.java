@@ -90,29 +90,75 @@ public class MedicineSteps {
         context.set(APITestContext.ContextKeys.MEDICINE_ID, medicineId);
     }
 
+//    @Given("I have created a medicine")
+//    public void iHaveCreatedAMedicine() {
+//        // This helper step creates a medicine using the admin token
+//        MedicineDTO medicineDTO = new MedicineDTO(
+//                "Pre-made Med" + System.nanoTime(),
+//                "Pre-made Desc",
+//                new BigDecimal("10.00"),
+//                50,
+//                "Test Pharma",
+//                "5 pack",
+//                "Test Comp"
+//        );
+//        String token = context.get(APITestContext.ContextKeys.AUTH_TOKEN);
+//
+//        Response response = given()
+//                .spec(SpecBuilder.getRequestSpec(token))
+//                .body(medicineDTO)
+//                .when()
+//                .post("/api/medicines");
+//
+//        Assert.assertEquals(response.getStatusCode(), 201);
+//        Long medicineId = response.jsonPath().getLong("id");
+//        context.set(APITestContext.ContextKeys.MEDICINE_ID, medicineId);
+//    }
+
     @Given("I have created a medicine")
     public void iHaveCreatedAMedicine() {
-        // This helper step creates a medicine using the admin token
-        MedicineDTO medicineDTO = new MedicineDTO(
-                "Pre-made Med" + System.nanoTime(),
-                "Pre-made Desc",
-                new BigDecimal("10.00"),
-                50,
-                "Test Pharma",
-                "5 pack",
-                "Test Comp"
-        );
-        String token = context.get(APITestContext.ContextKeys.AUTH_TOKEN);
+        // 1. Save the current USER token so we can restore it later
+        String userToken = context.get(APITestContext.ContextKeys.AUTH_TOKEN);
 
-        Response response = given()
-                .spec(SpecBuilder.getRequestSpec(token))
+        // 2. Log in as ADMIN to get an admin token
+        // (Make sure these credentials match your data.sql)
+        String adminEmail = "admin@meds.com";
+        String adminPassword = "AdminPass123!";
+
+        String adminLoginBody = String.format("{\"email\":\"%s\", \"password\":\"%s\"}", adminEmail, adminPassword);
+
+        Response adminLoginResponse = given()
+                .spec(SpecBuilder.getRequestSpec())
+                .body(adminLoginBody)
+                .when()
+                .post("/api/auth/login");
+
+        Assert.assertEquals(adminLoginResponse.getStatusCode(), 200, "Admin login failed during setup");
+        String adminToken = adminLoginResponse.jsonPath().getString("token");
+
+        // 3. Create the medicine using the ADMIN token
+        MedicineDTO medicineDTO = new MedicineDTO(
+                "Cart Test Med " + System.nanoTime(),
+                "Desc",
+                new BigDecimal("10.00"),
+                100,
+                "Pharma",
+                "Pack",
+                "Comp"
+        );
+
+        Response createResponse = given()
+                .spec(SpecBuilder.getRequestSpec(adminToken)) // Use admin token here
                 .body(medicineDTO)
                 .when()
                 .post("/api/medicines");
 
-        Assert.assertEquals(response.getStatusCode(), 201);
-        Long medicineId = response.jsonPath().getLong("id");
+        Assert.assertEquals(createResponse.getStatusCode(), 201, "Admin failed to create medicine");
+        Long medicineId = createResponse.jsonPath().getLong("id");
         context.set(APITestContext.ContextKeys.MEDICINE_ID, medicineId);
+
+        // 4. Restore the USER token to the context so subsequent steps run as the user
+        context.set(APITestContext.ContextKeys.AUTH_TOKEN, userToken);
     }
 
     @And("I prepare an update for that medicine")
@@ -135,29 +181,4 @@ public class MedicineSteps {
         context.set(APITestContext.ContextKeys.REQUEST, request);
     }
 
-//    @When("I send a PUT request to {string}")
-//    public void iSendAPUTRequestTo(String endpoint) {
-//        RequestSpecification request = context.getRequest();
-//        Long medicineId = context.get(APITestContext.ContextKeys.MEDICINE_ID);
-//
-//        Response response = request
-//                .pathParam("MEDICINE_ID", medicineId)
-//                .when()
-//                .put(endpoint);
-//
-//        context.set(APITestContext.ContextKeys.RESPONSE, response);
-//    }
-
-//    @When("I send a DELETE request to {string}")
-//    public void iSendADELETERequestTo(String endpoint) {
-//        String token = context.get(APITestContext.ContextKeys.AUTH_TOKEN);
-//        Long medicineId = context.get(APITestContext.ContextKeys.MEDICINE_ID);
-//
-//        RequestSpecification request = given()
-//                .spec(SpecBuilder.getRequestSpec(token))
-//                .pathParam("MEDICINE_ID", medicineId);
-//
-//        Response response = request.when().delete(endpoint);
-//        context.set(APITestContext.ContextKeys.RESPONSE, response);
-//    }
 }
