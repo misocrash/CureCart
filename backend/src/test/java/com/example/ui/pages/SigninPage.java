@@ -1,6 +1,8 @@
 package com.example.ui.pages;
 
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -44,13 +46,31 @@ public class SigninPage {
     }
 
     public void performLogin(String email, String password) {
-        enterEmail(email);
-        enterPassword(password);
-        clickSignIn();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(emailInputLocator)).clear();
+        driver.findElement(emailInputLocator).sendKeys(email);
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(passwordInputLocator)).clear();
+        driver.findElement(passwordInputLocator).sendKeys(password);
+
+        wait.until(ExpectedConditions.elementToBeClickable(signInButtonLocator)).click();
     }
 
     public String getErrorMessage() {
-        return wait.until(ExpectedConditions.visibilityOfElementLocated(errorMessageLocator)).getText();
+        try {
+            // 1. Try to wait for a native alert first (fast 5s wait)
+            WebDriverWait alertWait = new WebDriverWait(driver, Duration.ofSeconds(5));
+            Alert alert = alertWait.until(ExpectedConditions.alertIsPresent());
+            String alertText = alert.getText();
+            alert.accept(); // Close the alert so tests can continue
+            return alertText;
+        } catch (TimeoutException e) {
+            // 2. If no alert, fall back to waiting for the HTML error element
+            try {
+                return wait.until(ExpectedConditions.visibilityOfElementLocated(errorMessageLocator)).getText();
+            } catch (TimeoutException e2) {
+                return "No error message displayed (neither alert nor HTML)";
+            }
+        }
     }
 
     public boolean isSignInButtonEnabled() {
