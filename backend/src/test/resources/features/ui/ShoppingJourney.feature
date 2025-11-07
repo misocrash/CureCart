@@ -1,3 +1,4 @@
+
 Feature: Medicine Shopping Journey
   As a logged-in user, I want to search for medicines, add them to my cart, and place an order.
 
@@ -26,3 +27,4 @@ Feature: Medicine Shopping Journey
     And I click "Place Order"
     Then I should see an "Order placed successfully!" confirmation
     And I should see the new order in my Order History
+

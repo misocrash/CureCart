@@ -22,6 +22,7 @@ public class ShoppingSteps {
     private final BrowseMedicinesPage browsePage;
     private final CartPage cartPage;
     private final DeliveryPage deliveryPage;
+    private final OrderHistoryPage orderHistoryPage;
 
     public ShoppingSteps(TestContext testContext) {
         this.testContext = testContext;
@@ -30,6 +31,7 @@ public class ShoppingSteps {
         this.browsePage = new BrowseMedicinesPage(testContext.getDriver());
         this.cartPage = new CartPage(testContext.getDriver());
         this.deliveryPage = new DeliveryPage(testContext.getDriver());
+        this.orderHistoryPage=new OrderHistoryPage(testContext.getDriver());
     }
 
     // --- BACKGROUND ---
@@ -39,7 +41,12 @@ public class ShoppingSteps {
         signupPage.navigateTo();
         String freshEmail = "shopper_" + System.currentTimeMillis() + "@example.com";
         String password = "Password123!";
-        signupPage.performSignup("Shopper", freshEmail, password);
+        String name="Shopper";
+        signupPage.performSignup(name, freshEmail, password);
+
+        // Store the dynamic data in the shared context
+        testContext.setName(name);
+        testContext.setEmail(freshEmail);
 
         // 2. Handle potential "Signup Successful" alert
         WebDriverWait wait = new WebDriverWait(testContext.getDriver(), Duration.ofSeconds(5));
@@ -180,11 +187,9 @@ public class ShoppingSteps {
     }
 
     @Then("I should see the new order in my Order History")
-    public void i_should_see_new_order_in_history() {
-        // Simple validation: navigate to orders and check that the list is not empty
-        testContext.getDriver().get("http://localhost:4200/orders");
-        WebDriverWait wait = new WebDriverWait(testContext.getDriver(), Duration.ofSeconds(10));
-        int orderCount = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(".order-row, tbody tr"))).size();
-        Assert.assertTrue(orderCount > 0, "Order history is empty after placing an order!");
+    public void i_should_see_the_new_order_in_my_order_history() {
+        orderHistoryPage.navigateTo();
+        int orderCount = orderHistoryPage.getOrderCount();
+        Assert.assertTrue(orderCount > 0, "Order history is empty after placing an order.");
     }
 }

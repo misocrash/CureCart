@@ -1,4 +1,4 @@
-@ignore
+
 Feature: User Authentication
   As a user, I want to create an account and log in so that I can access restricted features.
 
