@@ -15,7 +15,11 @@ import org.testng.annotations.DataProvider;
         // tags = "@auth",
 
         // Plugin for readable console logs
-        plugin = {"pretty"}
+        plugin = {
+                "pretty",
+                "html:target/cucumber-reports/api-report.html",
+                "json:target/cucumber-reports/apiTestReport.json"
+        }
 )
 public class APIRunner extends AbstractTestNGCucumberTests {
 

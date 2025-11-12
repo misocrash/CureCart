@@ -21,10 +21,7 @@ public class UserSteps {
         this.context = context;
     }
 
-    /**
-     * This is a shared step that can be used by any feature.
-     * It performs both registration and login to get a valid token and user ID.
-     */
+
     @Given("I am a logged-in user")
     public void iAmALoggedInUser() {
         // --- Register ---

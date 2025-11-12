@@ -10,8 +10,8 @@ import org.testng.annotations.DataProvider;
 
         plugin = {
                 "pretty",
-                "html:target/cucumber-reports/cucumber-pretty.html",
-                "json:target/cucumber-reports/CucumberTestReport.json"
+                "html:target/cucumber-reports/ui-report.html",
+                "json:target/cucumber-reports/uiTestReport.json"
         },
         monochrome = true,
         tags = "not @ignore"
